@@ -12,6 +12,7 @@
   --font-mono: var(--font-geist-mono);
   --color-black: #000;
   --color-black-100: #000319;
+  --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,4 +26,15 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@keyframes spotlight {
+  0% {
+    opacity: 0;
+    transform: translate(-72%, -62%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -40%) scale(1);
+  }
 }
