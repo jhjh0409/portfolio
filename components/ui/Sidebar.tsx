@@ -1,6 +1,6 @@
 "use client";
 import { isMobile } from "@/lib/utils";
-import { IconLayoutSidebarRightCollapse } from "@tabler/icons-react";
+import { IconLayoutSidebarLeftCollapse, IconLayoutSidebarRightCollapse } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
@@ -12,19 +12,33 @@ import { socials } from "./socials";
 
 export const Sidebar = () => {
   const [open, setOpen] = useState(isMobile() ? false : true);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <>
-        {open && (
-  <div className="px-6 z-[100] py-10 bg-neutral-100 max-w-[14rem] lg:w-fit fixed lg:relative h-screen left-0 flex flex-col justify-between">
-    <div className="flex-1 overflow-auto">
-      <SidebarHeader />
-      <Navigation setOpen={setOpen} />
-    </div>
-    <div onClick={() => isMobile() && setOpen(false)}>
-    </div>
-  </div>
-)}
+      {open && (
+        <div className={twMerge(
+          "px-6 z-[100] py-10 bg-neutral-100 fixed lg:relative h-screen left-0 flex flex-col justify-between transition-all duration-300",
+          collapsed ? "max-w-[4.5rem] px-3" : "max-w-[14rem] lg:w-fit"
+        )}>
+          <div className="flex-1 overflow-auto">
+            <SidebarHeader collapsed={collapsed} />
+            <Navigation setOpen={setOpen} collapsed={collapsed} />
+          </div>
+          <div className="flex justify-center mt-4">
+            <button
+              className="h-8 w-8 border border-neutral-200 rounded-full backdrop-blur-sm flex items-center justify-center"
+              onClick={() => setCollapsed(!collapsed)}
+              title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {collapsed ? 
+                <IconLayoutSidebarRightCollapse className="h-4 w-4 text-secondary" /> : 
+                <IconLayoutSidebarLeftCollapse className="h-4 w-4 text-secondary" />
+              }
+            </button>
+          </div>
+        </div>
+      )}
       <button
         className="fixed lg:hidden bottom-4 right-4 h-8 w-8 border border-neutral-200 rounded-full backdrop-blur-sm flex items-center justify-center z-50"
         onClick={() => setOpen(!open)}
@@ -37,8 +51,10 @@ export const Sidebar = () => {
 
 export const Navigation = ({
   setOpen,
+  collapsed,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  collapsed: boolean;
 }) => {
   const pathname = usePathname();
 
@@ -52,9 +68,12 @@ export const Navigation = ({
           href={link.href}
           onClick={() => isMobile() && setOpen(false)}
           className={twMerge(
-            "text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
+            "text-secondary hover:text-primary transition duration-200 flex items-center py-2 px-2 rounded-md text-sm",
+            !collapsed && "space-x-2",
+            collapsed && "justify-center",
             isActive(link.href) && "bg-white shadow-lg text-primary"
           )}
+          title={collapsed ? link.label : ""}
         >
           <link.icon
             className={twMerge(
@@ -62,20 +81,26 @@ export const Navigation = ({
               isActive(link.href) && "text-sky-500"
             )}
           />
-          <span>{link.label}</span>
+          {!collapsed && <span>{link.label}</span>}
         </Link>
       ))}
 
-      <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-10 px-2">
-        Socials
+      <Heading as="p" className={twMerge(
+        "text-sm md:text-sm lg:text-sm pt-10 px-2",
+        collapsed && "text-center"
+      )}>
+        {collapsed ? "" : "Socials"}
       </Heading>
       {socials.map((link: Navlink) => (
         <Link
           key={link.href}
           href={link.href}
           className={twMerge(
-            "text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm"
+            "text-secondary hover:text-primary transition duration-200 flex items-center py-2 px-2 rounded-md text-sm",
+            !collapsed && "space-x-2",
+            collapsed && "justify-center"
           )}
+          title={collapsed ? link.label : ""}
         >
           <link.icon
             className={twMerge(
@@ -83,20 +108,30 @@ export const Navigation = ({
               isActive(link.href) && "text-sky-500"
             )}
           />
-          <span>{link.label}</span>
+          {!collapsed && <span>{link.label}</span>}
         </Link>
       ))}
     </div>
   );
 };
 
-const SidebarHeader = () => {
+const SidebarHeader = ({ collapsed }: { collapsed: boolean }) => {
   return (
-    <div className="flex space-x-2">
-      <div className="flex text-sm flex-col ml-2">
-        <p className="font-bold text-primary">Tok Jing Huan</p>
-        <p className="font-light text-secondary">Computer Science Major</p>
-      </div>
+    <div className={twMerge(
+      "flex",
+      collapsed ? "justify-center" : "space-x-2"
+    )}>
+      {!collapsed && (
+        <div className="flex text-sm flex-col ml-2">
+          <p className="font-bold text-primary">Tok Jing Huan</p>
+          <p className="font-light text-secondary">Computer Science Major</p>
+        </div>
+      )}
+      {collapsed && (
+        <div className="flex justify-center items-center h-8 w-8 rounded-full bg-primary text-white font-bold">
+          JH
+        </div>
+      )}
     </div>
   );
 };
