@@ -14,6 +14,8 @@
   --color-black: #000;
   --color-black-100: #000319;
   --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
+  --color-primary: #404040;
+  --color-secondary: #737373;
 }
 
 @media (prefers-color-scheme: dark) {
