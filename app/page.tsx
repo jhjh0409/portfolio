@@ -8,9 +8,10 @@ export default function Home() {
     <main className="relative bg-white flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5">
       <div className="max-w-7xl w-full">
         <Container>
+          <span className="text-4xl">👋</span>
           <Heading className="font-black">Hello! I&apos;m Jing Huan.</Heading>
           <Paragraph className="max-w-xl mt-4">
-            This is my web portfolio, where you can learn more about me!😀
+            Welcome to my web portfolio, where I showcase my work, past experiences and talk about things I&apos;m interested in.😀
           </Paragraph>
           <Paragraph className="max-w-xl mt-4">
             I&apos;m a Computer Science and Design Junior at<br />
