@@ -47,8 +47,74 @@ export const TechStack = () => {
       className: "h-10 w-12",
     },
     {
+      title: "React",
+      src: "/images/react.png",
+
+      className: "h-10 w-14",
+    },
+    {
+      title: "Bootstrap",
+      src: "/images/bootstrap.png",
+
+      className: "h-10 w-10",
+    },
+    {
+      title: "Git",
+      src: "/images/git.png",
+
+      className: "h-10 w-12",
+    },
+    {
+      title: "NextJS",
+      src: "/images/next.png",
+
+      className: "h-10 w-12",
+    },
+    {
+      title: "MongoDB",
+      src: "/images/mongodb.png",
+
+      className: "h-10 w-24",
+    },
+    {
+      title: "Pandas",
+      src: "/images/pandas.png",
+
+      className: "h-10 w-24",
+    },
+    {
+      title: "SpringBoot",
+      src: "/images/springboot.png",
+
+      className: "h-10 w-24",
+    },
+    {
+      title: "FireBase",
+      src: "/images/firebase.png",
+
+      className: "h-10 w-24",
+    },
+    {
+      title: "Docker",
+      src: "/images/docker.png",
+
+      className: "h-10 w-24",
+    },
+    {
+      title: "Lucid",
+      src: "/images/alchitry.png",
+
+      className: "h-10 w-24",
+    },
+    {
       title: "Tailwind",
       src: "/images/tailwind.png",
+
+      className: "h-10 w-24",
+    },
+    {
+      title: "Gradle",
+      src: "/images/gradle.png",
 
       className: "h-10 w-24",
     },
@@ -57,6 +123,12 @@ export const TechStack = () => {
       src: "/images/vercel.png",
 
       className: "h-10 w-24",
+    },
+    {
+      title: "AWS",
+      src: "/images/aws.png",
+
+      className: "h-10 w-12",
     },
   ];
   return (
