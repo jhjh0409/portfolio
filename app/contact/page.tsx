@@ -1,3 +1,4 @@
+import ContactForm from "@/components/ContactForm";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Paragraph } from "@/components/ui/Paragraph";
@@ -9,9 +10,15 @@ export default function Contact() {
         <Container>
           <span className="text-4xl">📫</span>
           <Heading className="font-black">Contact Me</Heading>
-          <Paragraph className="max-w-xl mt-4">
-            This is my web portfolio, where you can learn more about me!😀
+          <Paragraph className="max-w-2xl mt-4">
+            I'm always open to new opportunities, collaborations, or just a chat about tech, design, or ideas! Feel free to email me or fill up the form, I will reply ASAP!
           </Paragraph>
+          <Paragraph className="max-w-xl mt-4">
+            📧Email: jinghuan04@gmail.com
+          </Paragraph>
+          <div className="my-4">
+            <ContactForm />
+          </div>
         </Container>
       </div>
     </main>
