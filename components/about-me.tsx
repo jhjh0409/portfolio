@@ -4,7 +4,7 @@ import { Paragraph } from "./ui/Paragraph"
 export default function AboutMe() {
   // You can replace these placeholder images with your actual images
   const images = [
-    "/placeholder.svg?height=300&width=300",
+    "/images/FinalOutput.png",
     "/placeholder.svg?height=300&width=300",
     "/placeholder.svg?height=300&width=300",
     "/placeholder.svg?height=300&width=300",

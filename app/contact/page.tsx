@@ -11,7 +11,7 @@ export default function Contact() {
           <span className="text-4xl">📫</span>
           <Heading className="font-black">Contact Me</Heading>
           <Paragraph className="max-w-2xl mt-4">
-            I'm always open to new opportunities, collaborations, or just a chat about tech, design, or ideas! Feel free to email me or fill up the form, I will reply ASAP!
+            I&apos;m always open to new opportunities, collaborations, or just a chat about tech, design, or ideas! Feel free to email me or fill up the form, I will reply ASAP!
           </Paragraph>
           <Paragraph className="max-w-xl mt-4">
             📧Email: jinghuan04@gmail.com
