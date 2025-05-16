@@ -18,7 +18,7 @@ export default function Home() {
             Singapore University of Technology and Design (SUTD).
           </Paragraph>
           <Paragraph className="max-w-xl mt-4">
-            As an aspiring Software Engineer, I&apos;m passionate about the innovation and development of technology to better lives.
+            As an aspiring Software Engineer, I&apos;m passionate about innovating and developing technology to improve lives.
           </Paragraph>
           <TechStack />
         </Container>

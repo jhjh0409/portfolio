@@ -1,6 +1,6 @@
+import AboutMe from "@/components/about-me";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
-import { Paragraph } from "@/components/ui/Paragraph";
 
 export default function About() {
   return (
@@ -9,10 +9,7 @@ export default function About() {
         <Container>
             <span className="text-4xl">💬</span>
           <Heading className="font-black">About Me</Heading>
-          <Paragraph className="max-w-xl mt-4">
-            I am currently a Year 2 student at Singapore University of Design & Technology, 
-            majoring in Computer Science and Design, specializing in Software Engineering.
-          </Paragraph>
+          <AboutMe />
         </Container>
       </div>
     </main>
