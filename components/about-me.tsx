@@ -28,14 +28,14 @@ export default function AboutMe() {
       {/* Text Content Area */}
       <div>
         <Paragraph className="mt-4">
-            I'm passionate about creating meaningful experiences through design and technology. With a background in both
-            creative and technical fields, I bring a unique perspective to every project. When I'm not working, you can
+            I&apos;m passionate about creating meaningful experiences through design and technology. With a background in both
+            creative and technical fields, I bring a unique perspective to every project. When I&apos;m not working, you can
             find me exploring the outdoors, experimenting with new recipes, or diving into a good book.
         </Paragraph>
 
         <Paragraph className="mt-4">
-            I'm passionate about creating meaningful experiences through design and technology. With a background in both
-            creative and technical fields, I bring a unique perspective to every project. When I'm not working, you can
+            I&apos;m passionate about creating meaningful experiences through design and technology. With a background in both
+            creative and technical fields, I bring a unique perspective to every project. When I&apos;m not working, you can
             find me exploring the outdoors, experimenting with new recipes, or diving into a good book.
         </Paragraph>
       </div>
