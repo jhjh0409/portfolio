@@ -105,13 +105,42 @@ export const projects: Project[] = [
     year: 2023,
   },
   {
-    id: "finance-tracker",
-    title: "Personal Finance Tracker",
-    description: "An application to help users manage their personal finances, track expenses, and set budget goals.",
+    id: "educube",
+    title: "EduCube",
+    description: "EduCube is a smart cube designed to enhance student learning experiences and interactions.",
     detailedDescription:
       "This personal finance application helps users take control of their financial health by providing tools to track expenses, monitor income, set budget goals, and visualize spending patterns. The application includes features for categorizing transactions, generating financial reports, and receiving insights on spending habits to help users make better financial decisions.",
-    technologies: ["React", "Express", "MongoDB", "Chart.js", "Auth0"],
-    imageUrl: "/placeholder.svg?height=600&width=1200",
+    technologies: ["C++", "Arduino", "ESP32"],
+    imageUrl: "/images/educube.png",
+    images: [
+      "/placeholder.svg?height=600&width=1200",
+      "/placeholder.svg?height=600&width=1200",
+      "/placeholder.svg?height=600&width=1200",
+    ],
+    liveUrl: "https://example.com/finance-tracker",
+    githubUrl: "https://github.com/yourusername/finance-tracker",
+    features: [
+      "Expense categorization",
+      "Budget planning tools",
+      "Financial goal setting",
+      "Spending pattern visualization",
+      "Secure bank account integration",
+    ],
+    challenges: [
+      "Ensuring data security and privacy",
+      "Creating intuitive data visualization",
+      "Implementing accurate financial calculations",
+    ],
+    year: 2022,
+  },
+  {
+    id: "mini-arcade",
+    title: "Mini-Arcade Games",
+    description: "EduCube is a smart cube designed to enhance student learning experiences and interactions.",
+    detailedDescription:
+      "This personal finance application helps users take control of their financial health by providing tools to track expenses, monitor income, set budget goals, and visualize spending patterns. The application includes features for categorizing transactions, generating financial reports, and receiving insights on spending habits to help users make better financial decisions.",
+    technologies: ["Python", "CLI"],
+    imageUrl: "/images/educube.png",
     images: [
       "/placeholder.svg?height=600&width=1200",
       "/placeholder.svg?height=600&width=1200",

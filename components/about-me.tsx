@@ -32,7 +32,7 @@ export default function AboutMe() {
         </Paragraph>
 
         <Paragraph className="mt-4">
-            I&apos;m currently pursuing a Bachelor's of Engineering, majoring in Computer Science and Design at Singapore University of Design and Technology (SUTD).
+            I&apos;m currently pursuing a Bachelor&lsquo;s of Engineering, majoring in Computer Science and Design at Singapore University of Design and Technology (SUTD).
             Prior to University, I was at Singapore Polytechnic doing a diploma in Visual Effects and Motion Graphics. This is my journey.
         </Paragraph>
 
@@ -57,7 +57,7 @@ export default function AboutMe() {
 
         <Paragraph className="mt-4">
             After graduating with my diploma, I realised I wanted to pursue a career in the technology sector. During my 2 years in National Service, I dabbled more
-            with programming and eventually found out about Harvard's CS50x, which was an introductory course to Computer Science. The course was fascinating.
+            with programming and eventually found out about Harvard&lsquo;s CS50x, which was an introductory course to Computer Science. The course was fascinating.
             Although it was difficult, I was having the time of my life learning and attempting the problem sets. I would spend days trying to solve a single
             question and had a blast doing so.
         </Paragraph>
