@@ -43,12 +43,12 @@ export default function ProjectPage() {
     <main className="container relative bg-white flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5">
         <div className="max-w-5xl">
       <motion.div initial="hidden" animate="visible" variants={fadeIn}>
-        <Link href="/" className="inline-flex items-center text-sm mb-8 hover:text-primary transition-colors">
+        <Link href="/projects" className="inline-flex items-center text-sm my-6 text-emerald-400 transition-colors">
           <ChevronLeft className="mr-1 h-4 w-4" />
           Back to all projects
         </Link>
 
-        <div className="grid gap-8 md:grid-cols-2 mb-12">
+        <div className="grid gap-8 md:grid-cols-2 mb-6">
           <div className="relative aspect-video overflow-hidden rounded-lg border">
             <Image
               src={project.imageUrl || "/placeholder.svg"}
@@ -60,7 +60,7 @@ export default function ProjectPage() {
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold tracking-tight mb-4">{project.title}</h1>
+            <h1 className="text-3xl font-bold tracking-tight mb-4 text-emerald-400">{project.title}</h1>
 
             <div className="flex flex-wrap gap-2 mb-6">
               {project.technologies.map((tech) => (
@@ -70,7 +70,7 @@ export default function ProjectPage() {
               ))}
             </div>
 
-            <p className="text-lg mb-6">{project.detailedDescription}</p>
+            <p className="text-lg mb-6 text-secondary">{project.detailedDescription}</p>
 
             <div className="flex flex-wrap gap-4">
               {project.liveUrl && (
@@ -95,14 +95,14 @@ export default function ProjectPage() {
 
         {project.features && (
           <motion.section className="mb-12" variants={stagger}>
-            <motion.h2 className="text-2xl font-bold mb-4" variants={fadeIn}>
+            <motion.h2 className="text-2xl font-bold mb-4 text-primary" variants={fadeIn}>
               Key Features
             </motion.h2>
             <motion.ul className="grid gap-3 md:grid-cols-2" variants={stagger}>
               {project.features.map((feature, index) => (
                 <motion.li key={index} className="flex items-start" variants={fadeIn}>
                   <div className="mr-2 mt-1 flex h-2 w-2 rounded-full bg-primary" />
-                  <span>{feature}</span>
+                  <span className="text-secondary">{feature}</span>
                 </motion.li>
               ))}
             </motion.ul>
@@ -111,14 +111,14 @@ export default function ProjectPage() {
 
         {project.challenges && (
           <motion.section className="mb-12" variants={stagger}>
-            <motion.h2 className="text-2xl font-bold mb-4" variants={fadeIn}>
+            <motion.h2 className="text-2xl font-bold mb-4 text-primary" variants={fadeIn}>
               Challenges & Solutions
             </motion.h2>
             <motion.ul className="space-y-3" variants={stagger}>
               {project.challenges.map((challenge, index) => (
                 <motion.li key={index} className="flex items-start" variants={fadeIn}>
                   <div className="mr-2 mt-1 flex h-2 w-2 rounded-full bg-primary" />
-                  <span>{challenge}</span>
+                  <span className="text-secondary">{challenge}</span>
                 </motion.li>
               ))}
             </motion.ul>
@@ -127,7 +127,7 @@ export default function ProjectPage() {
 
         {project.images && project.images.length > 1 && (
           <motion.section variants={fadeIn}>
-            <h2 className="text-2xl font-bold mb-4">Project Gallery</h2>
+            <h2 className="text-2xl font-bold mb-4 text-primary">Project Gallery</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {project.images.map((image, index) => (
                 <div key={index} className="relative aspect-video rounded-lg overflow-hidden border">
