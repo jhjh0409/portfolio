@@ -4,15 +4,27 @@ import { Paragraph } from "./ui/Paragraph"
 export default function AboutMe() {
   // You can replace these placeholder images with your actual images
   const images = [
-    "/images/FinalOutput.png",
-    "/placeholder.svg?height=600&width=300",
-    "/placeholder.svg?height=300&width=300",
-    "/placeholder.svg?height=300&width=300",
+    "/images/profile.jpg",
+    "/images/profile2.jpg",
+    "/images/profile3.jpg",
+    "/images/profile4.jpg",
+  ]
+
+  const renders = [
+    "/images/sylas.png",
+    "/images/chess.png",
+    "/images/kitchen.png",
+    "/images/snakedagger.png",
+  ]
+
+  const sports = [
+    "/images/team1.jpg",
+    "/images/team2.jpg",
   ]
 
   return (
     <section className="py-10 text-secondary">
-
+      
       {/* Image Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
         {images.map((src, index) => (
@@ -48,6 +60,18 @@ export default function AboutMe() {
             learn more about lighting, rendering and compositing.
         </Paragraph>
 
+        {/* Image Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 my-8">
+        {renders.map((src, index) => (
+          <div
+            key={index}
+            className="relative h-65 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+          >
+            <Image src={src || "/placeholder.svg"} alt={`About me image ${index + 1}`} fill className="object-cover" />
+          </div>
+        ))}
+      </div>
+
         <Paragraph className="mt-4">
             But over time, I found myself drifting away from it - not because I stopped liking it, but because something else started to take over.
             I began spending more time diving into the technology sector. I was fascinated with the latest news and development of tools, and
@@ -67,6 +91,18 @@ export default function AboutMe() {
             SUTD, and I officially began my Bachelors. In my spare time, I enjoy exploring new technologies, building projects and joining hackathons. I also
             love keeping fit and do sports regularly. Feel free to reach out to have a chat!
         </Paragraph>
+
+          {/* Image Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4 mt-8">
+        {sports.map((src, index) => (
+          <div
+            key={index}
+            className="relative h-65 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+          >
+            <Image src={src || "/placeholder.svg"} alt={`About me image ${index + 1}`} fill className="object-cover" />
+          </div>
+        ))}
+      </div>
       </div>
     </section>
   )
