@@ -25,7 +25,7 @@ export const projects: Project[] = [
     description:
       "An Android application to streamline tracking of package deliveries within the university.",
     detailedDescription:
-      "This e-commerce dashboard provides store owners with powerful tools to monitor and analyze their business performance. The dashboard includes real-time sales tracking, inventory management, customer analytics, and customizable reports. Built with performance and usability in mind, it helps store owners make data-driven decisions to grow their business.",
+      "ParcelEye is an Android application designed to help users, mainly SUTD students and faculty to track and manage their parcels efficiently, as there is a common problem of parcels being stolen in the hostel area.",
     technologies: ["Java", "AWS", "FireBase", "MongoDB", "SpringBoot", "Docker", "Gradle"],
     imageUrl: "/images/parceleyepic1.png",
     images: [
@@ -33,8 +33,14 @@ export const projects: Project[] = [
       "/placeholder.svg?height=600&width=1200",
       "/placeholder.svg?height=600&width=1200",
     ],
-    liveUrl: "https://example.com/ecommerce-dashboard",
-    githubUrl: "https://github.com/yourusername/ecommerce-dashboard",
+    videos: [
+      {
+        url: "https://youtu.be/cZLDq7wUCWM",
+        title: "ParcelEye",
+        thumbnailUrl: "/images/parceleyepic1.png",
+      },
+    ],
+    githubUrl: "https://github.com/jhjh0409/ParcelEye_SUTD",
     features: [
       "Real-time sales analytics",
       "Inventory management system",
@@ -42,40 +48,36 @@ export const projects: Project[] = [
       "Customizable reporting tools",
       "Multi-platform support",
     ],
-    challenges: [
-      "Optimizing performance for large datasets",
-      "Creating an intuitive user interface",
-      "Implementing real-time data synchronization",
-    ],
     year: 2025,
   },
   {
     id: "in-between",
     title: "In Between",
     description:
-      "A 2-player game",
+      "A two-player guessing game on the Alchitry Au (Artix-7 FPGA), built using Lucid HDL",
     detailedDescription:
-      "This fitness tracking application empowers users to take control of their health journey. Users can create custom workout plans, track their nutrition intake, monitor progress with visual charts, and share achievements with friends. The app uses machine learning to provide personalized recommendations based on user performance and goals.",
+      "In-Between is a two-player guessing game implemented on an FPGA platform. Players compete to guess the position of a randomly generated number relative to a given range, testing both luck and quick decision-making skills.",
     technologies: ["Lucid", "Alchitry Au"],
-    imageUrl: "/placeholder.svg?height=600&width=1200",
+    videos: [
+      {
+        url: "https://www.youtube.com/watch?v=EJyl4Bt45qQ",
+        title: "In Between",
+        thumbnailUrl: "/images/showcase1.JPG",
+      },
+    ],
+    imageUrl: "/images/inbetween.jpg",
     images: [
-      "/placeholder.svg?height=600&width=1200",
-      "/placeholder.svg?height=600&width=1200",
-      "/placeholder.svg?height=600&width=1200",
+      "/images/showcase1.JPG",
+      "/images/showcase2.JPG",
+      "/images/showcase3.JPG",
+      "/images/inbetweenposter.png",
+      "/images/inbetweendiagram.png",
     ],
-    liveUrl: "https://example.com/fitness-app",
-    githubUrl: "https://github.com/yourusername/fitness-app",
+    githubUrl: "https://github.com/jhjh0409/In_Between_SUTD",
     features: [
-      "Custom workout planning",
-      "Nutrition tracking and analysis",
-      "Progress visualization",
-      "Social sharing capabilities",
-      "Personalized recommendations",
-    ],
-    challenges: [
-      "Creating a seamless cross-platform experience",
-      "Implementing accurate fitness tracking algorithms",
-      "Designing an engaging user interface",
+      "Custom designed finite state machine (FSM) and datapath for game logic",
+      "Hexadecimals encoded to increase difficulty",
+      "Tactile buttons for improved user experience",
     ],
     year: 2022,
   },
