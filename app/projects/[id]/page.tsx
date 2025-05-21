@@ -2,6 +2,8 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { ImageLightbox } from "@/components/ui/image-lightbox"
+import { VideoPlayer } from "@/components/ui/video-player"
 import { getProjectById } from "@/lib/projects"
 import { motion } from "framer-motion"
 import { ChevronLeft, ExternalLink, Github } from "lucide-react"
@@ -93,6 +95,17 @@ export default function ProjectPage() {
           </div>
         </div>
 
+        {project.videos && project.videos.length > 0 && (
+          <motion.section className="mb-12" variants={fadeIn}>
+            <h2 className="text-2xl font-bold mb-4 text-primary">Project Videos</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {project.videos.map((video, index) => (
+                <VideoPlayer key={index} videoUrl={video.url} title={video.title} thumbnailUrl={video.thumbnailUrl} />
+              ))}
+            </div>
+          </motion.section>
+        )}
+
         {project.features && (
           <motion.section className="mb-12" variants={stagger}>
             <motion.h2 className="text-2xl font-bold mb-4 text-primary" variants={fadeIn}>
@@ -125,21 +138,10 @@ export default function ProjectPage() {
           </motion.section>
         )}
 
-        {project.images && project.images.length > 1 && (
+        {project.images && project.images.length > 0 && (
           <motion.section variants={fadeIn}>
             <h2 className="text-2xl font-bold mb-4 text-primary">Project Gallery</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {project.images.map((image, index) => (
-                <div key={index} className="relative aspect-video rounded-lg overflow-hidden border">
-                  <Image
-                    src={image || "/placeholder.svg"}
-                    alt={`${project.title} screenshot ${index + 1}`}
-                    fill
-                    className="object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              ))}
-            </div>
+            <ImageLightbox images={project.images} title={project.title} />
           </motion.section>
         )}
       </motion.div>

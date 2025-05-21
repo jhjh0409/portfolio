@@ -10,7 +10,7 @@ export default function Blog() {
           <span className="text-4xl">📰</span>
           <Heading className="font-black">Blogs</Heading>
           <Paragraph className="max-w-xl mt-4">
-            This is my web portfolio, where you can learn more about me!😀
+            Things I find interesting!😀
           </Paragraph>
         </Container>
       </div>
