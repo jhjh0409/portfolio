@@ -43,7 +43,7 @@ export default function ProjectPage() {
 
   return (
     <main className="container relative bg-white flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5">
-        <div className="max-w-5xl">
+        <div className="max-w-5xl mb-8">
       <motion.div initial="hidden" animate="visible" variants={fadeIn}>
         <Link href="/projects" className="inline-flex items-center text-sm my-6 text-emerald-400 transition-colors">
           <ChevronLeft className="mr-1 h-4 w-4" />

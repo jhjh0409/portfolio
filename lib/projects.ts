@@ -114,29 +114,29 @@ export const projects: Project[] = [
     title: "EduCube",
     description: "EduCube is a smart cube designed to enhance student learning experiences and interactions.",
     detailedDescription:
-      "This personal finance application helps users take control of their financial health by providing tools to track expenses, monitor income, set budget goals, and visualize spending patterns. The application includes features for categorizing transactions, generating financial reports, and receiving insights on spending habits to help users make better financial decisions.",
+      "EduCUBE is a revolutionary tool designed to transform the classroom environment, enhancing student learning experiences and interactions. With a focus on optimizing student-student, student-speaker, and student-teaching assistant interactions, EduCUBE addresses common challenges students face in maintaining attention and engagement in class.",
     technologies: ["C++", "Arduino", "ESP32"],
+    videos: [
+      {
+        url: "https://www.youtube.com/watch?v=aFoYQ53OEtc",
+        title: "EduCube",
+        thumbnailUrl: "/images/educubeexplode.jpg",
+      },
+    ],
+    features: [
+      "Touchscreen LCDs for Interaction & Engagement",
+      "Multiple Classroom Modes",
+      "Internet Connectivity for Synchronization Across Devices",
+      "Tactile Surface for Smooth Touch",
+    ],
     imageUrl: "/images/educube.png",
     images: [
-      "/placeholder.svg?height=600&width=1200",
-      "/placeholder.svg?height=600&width=1200",
-      "/placeholder.svg?height=600&width=1200",
+      "/images/educubeproto.jpg",
+      "/images/educubegroup.jpg",
+      "/images/educubeposter.png",
     ],
-    liveUrl: "https://example.com/finance-tracker",
-    githubUrl: "https://github.com/yourusername/finance-tracker",
-    features: [
-      "Expense categorization",
-      "Budget planning tools",
-      "Financial goal setting",
-      "Spending pattern visualization",
-      "Secure bank account integration",
-    ],
-    challenges: [
-      "Ensuring data security and privacy",
-      "Creating intuitive data visualization",
-      "Implementing accurate financial calculations",
-    ],
-    year: 2022,
+    githubUrl: "https://github.com/jhjh0409/EduCube_SUTD",
+    year: 2024,
   },
   {
     id: "mini-arcade",
