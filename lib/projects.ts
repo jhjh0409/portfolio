@@ -29,9 +29,14 @@ export const projects: Project[] = [
     technologies: ["Java", "AWS", "FireBase", "MongoDB", "SpringBoot", "Docker", "Gradle"],
     imageUrl: "/images/parceleyepic1.png",
     images: [
-      "/placeholder.svg?height=600&width=1200",
-      "/placeholder.svg?height=600&width=1200",
-      "/placeholder.svg?height=600&width=1200",
+      "/images/showcase5.JPG",
+      "/images/showcase4.JPG",
+      "/images/parceleyelogin.png",
+      "/images/parceleyeposter.png",
+      "/images/parceleyelogin.png",
+      "/images/parceleyehome.png",
+      "/images/parceleyehistory.png",
+      "/images/parceleyeprofile.png",
     ],
     videos: [
       {
@@ -42,11 +47,10 @@ export const projects: Project[] = [
     ],
     githubUrl: "https://github.com/jhjh0409/ParcelEye_SUTD",
     features: [
-      "Real-time sales analytics",
-      "Inventory management system",
-      "Customer behavior insights",
-      "Customizable reporting tools",
-      "Multi-platform support",
+      "Real-time push notifications",
+      "Real-time parcel surveillance",
+      "User authentication with school email",
+      "AI tracking using SAM2 by Meta",
     ],
     year: 2025,
   },
@@ -79,37 +83,7 @@ export const projects: Project[] = [
       "Hexadecimals encoded to increase difficulty",
       "Tactile buttons for improved user experience",
     ],
-    year: 2022,
-  },
-  {
-    id: "cropcast",
-    title: "CropCast",
-    description:
-      "A web application that deploys a model to predict future crop production in Sub-Saharan Africa.",
-    detailedDescription:
-      "This AI-powered content generation platform helps marketers and content creators produce high-quality written content efficiently. The application can generate blog posts, social media captions, product descriptions, and marketing copy tailored to specific industries and tones. Advanced natural language processing ensures the content is engaging, relevant, and optimized for SEO.",
-    technologies: ["Python", "Pandas", "Flask", "Bootstrap", "ML"],
-    imageUrl: "/placeholder.svg?height=600&width=1200",
-    images: [
-      "/placeholder.svg?height=600&width=1200",
-      "/placeholder.svg?height=600&width=1200",
-      "/placeholder.svg?height=600&width=1200",
-    ],
-    liveUrl: "https://example.com/ai-content-generator",
-    githubUrl: "https://github.com/yourusername/ai-content-generator",
-    features: [
-      "Multi-format content generation",
-      "Tone and style customization",
-      "Industry-specific terminology",
-      "SEO optimization suggestions",
-      "Multilingual support",
-    ],
-    challenges: [
-      "Training AI models on diverse content types",
-      "Ensuring content quality and relevance",
-      "Creating an intuitive editing interface",
-    ],
-    year: 2023,
+    year: 2025,
   },
   {
     id: "educube",
