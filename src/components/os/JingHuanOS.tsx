@@ -57,8 +57,8 @@ interface State {
   lines: TermLine[];
 }
 
-/** siteOS — a desktop-OS portfolio. Port of the Design-Composer DCLogic. */
-export class SiteOS extends Component<Props, State> {
+/** JingHuanOS — a desktop-OS portfolio. Port of the Design-Composer DCLogic. */
+export class JingHuanOS extends Component<Props, State> {
   private inputRef = createRef<HTMLInputElement>();
   private dragging: Drag | null = null;
   private clockT: ReturnType<typeof setInterval> | null = null;
@@ -208,7 +208,7 @@ export class SiteOS extends Component<Props, State> {
         const next: Partial<State> = {
           booting: false,
           lines: [
-            { text: "siteOS 2.6  (tty1)", color: "#e9ebef" },
+            { text: "JingHuanOS 2.6  (tty1)", color: "#e9ebef" },
             {
               text: "Type 'help' to list commands — or click any app in the dock.",
               color: "#9aa0ac",
@@ -668,4 +668,4 @@ export class SiteOS extends Component<Props, State> {
   }
 }
 
-export default SiteOS;
+export default JingHuanOS;

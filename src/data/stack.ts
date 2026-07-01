@@ -29,7 +29,7 @@ export const catArt = `      /\\__/\\
  [  CS · DESIGN  ]`;
 
 export const stackInfo: StackInfo[] = [
-  { label: "OS", value: "siteOS 2.6", accent: "#3ddc91" },
+  { label: "OS", value: "JingHuanOS 2.6", accent: "#3ddc91" },
   { label: "Role", value: "SWE · ex-Motion Designer", accent: "#b08cff" },
   { label: "School", value: "SUTD — CS & Design", accent: "#6ea8fe" },
   { label: "Uptime", value: "building since 2018", accent: "#f2b65c" },

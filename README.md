@@ -1,11 +1,11 @@
-# siteOS — Tok Jing Huan's Portfolio
+# JingHuanOS — Tok Jing Huan's Portfolio
 
 A personal portfolio built as an interactive desktop operating system. Boot into the
 lock screen, log in, then explore About / Work / Projects / Stack / Blog / Contact as
 draggable windows — or drop into the built-in terminal and type `help`.
 
 Built with [TanStack Start](https://tanstack.com/start) (React 19 + Vite), Tailwind CSS v4,
-and deployed on Cloudflare.
+and deployed on Vercel.
 
 ## Prerequisites
 
@@ -38,9 +38,9 @@ bun dev          # start the dev server (http://localhost:3000)
 ```
 public/                  static assets (tahoe-8bit.png wallpaper)
 src/
-  components/os/         the siteOS UI (lock screen, dock, windows, terminal)
+  components/os/         the JingHuanOS UI (lock screen, dock, windows, terminal)
   data/                  content: projects, experience, about, stack, blog, contact
-  routes/                TanStack routes (__root shell + index → SiteOS)
+  routes/                TanStack routes (__root shell + index → JingHuanOS)
   styles.css             Tailwind v4 entry + OS keyframes/animations
 ```
 

@@ -77,7 +77,7 @@ export function Lockscreen({
           zIndex: 3,
         }}
       >
-        <span style={{ fontWeight: 700 }}>◉ siteOS</span>
+        <span style={{ fontWeight: 700 }}>◉ JingHuanOS</span>
         <span style={{ display: "flex", gap: 14, alignItems: "center" }}>
           <span>{battery}</span>
           <span>{topClock}</span>

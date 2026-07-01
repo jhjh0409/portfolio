@@ -46,7 +46,7 @@ export function MenuBar({
             textShadow: "0 1px 3px rgba(0,0,0,.5)",
           }}
         >
-          ◉ siteOS
+          ◉ JingHuanOS
         </span>
         <span className="jhos-menu-link" style={linkStyle} onClick={() => onOpen("about")}>
           About
