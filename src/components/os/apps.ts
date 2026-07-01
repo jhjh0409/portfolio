@@ -1,4 +1,12 @@
-export type AppId = "terminal" | "about" | "experience" | "projects" | "tech" | "blog" | "contact";
+export type AppId =
+  | "terminal"
+  | "about"
+  | "experience"
+  | "projects"
+  | "tech"
+  | "blog"
+  | "contact"
+  | "typetest";
 
 export interface AppDef {
   id: AppId;
@@ -17,6 +25,7 @@ export const apps: AppDef[] = [
   { id: "tech", title: "Stack", accent: "#34d3c8", def: { x: 180, y: 128, w: 640, h: 460 } },
   { id: "blog", title: "Blog", accent: "#fb7aa0", def: { x: 230, y: 96, w: 600, h: 460 } },
   { id: "contact", title: "Contact", accent: "#3ddc91", def: { x: 300, y: 150, w: 520, h: 430 } },
+  { id: "typetest", title: "Type", accent: "#e2b714", def: { x: 210, y: 110, w: 660, h: 540 } },
 ];
 
 export const appById = Object.fromEntries(apps.map((a) => [a.id, a])) as Record<AppId, AppDef>;
@@ -30,4 +39,5 @@ export const windowTitle: Record<AppId, { text: string; color: string }> = {
   tech: { text: "neofetch — stack", color: "#34d3c8" },
   blog: { text: "~/blog — cat *.md", color: "#fb7aa0" },
   contact: { text: "~/contact — ssh", color: "#3ddc91" },
+  typetest: { text: "~/typetest — wpm", color: "#e2b714" },
 };

@@ -74,6 +74,20 @@ export function AppIcon({ id, size = 21 }: { id: AppId; size?: number }) {
           <path d="M3.6 7l8.4 5.6L20.4 7" />
         </svg>
       );
+    case "typetest":
+      return (
+        <svg {...common}>
+          <rect x={2.5} y={6.5} width={19} height={11} rx={2} />
+          <line x1={6} y1={10} x2={6} y2={10} />
+          <line x1={9.5} y1={10} x2={9.5} y2={10} />
+          <line x1={13} y1={10} x2={13} y2={10} />
+          <line x1={16.5} y1={10} x2={16.5} y2={10} />
+          <line x1={7.5} y1={13.4} x2={7.5} y2={13.4} />
+          <line x1={11} y1={13.4} x2={11} y2={13.4} />
+          <line x1={14.5} y1={13.4} x2={14.5} y2={13.4} />
+          <line x1={8} y1={15.6} x2={16} y2={15.6} />
+        </svg>
+      );
     default:
       return null;
   }

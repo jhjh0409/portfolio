@@ -13,6 +13,7 @@ import { TechWindow } from "./windows/TechWindow";
 import { BlogWindow } from "./windows/BlogWindow";
 import { ContactWindow } from "./windows/ContactWindow";
 import { ProjectDetailWindow } from "./windows/ProjectDetailWindow";
+import { TypeTestWindow } from "./windows/TypeTestWindow";
 import { projects, getProjectById, projectAccent } from "../../data/projects";
 
 const GITHUB_URL = "https://github.com/jhjh0409";
@@ -366,6 +367,7 @@ export class JingHuanOS extends Component<Props, State> {
           O("  tech         — my stack (alias: neofetch)"),
           O("  blog         — recent writing"),
           O("  contact      — say hello"),
+          O("  type         — typing speed test"),
           O("  open <app>   — launch a window"),
           O("  ls · clear · whoami · date · echo"),
           O("Tip: every app is clickable in the dock below.", "#6b707b"),
@@ -420,6 +422,12 @@ export class JingHuanOS extends Component<Props, State> {
         this.openApp("contact");
         this.pushLines([O("› opening secure channel …", "#9aa0ac")]);
         break;
+      case "type":
+      case "typetest":
+      case "mtype":
+        this.openApp("typetest");
+        this.pushLines([O("› launching typing test — go fast …", "#9aa0ac")]);
+        break;
       case "open":
       case "launch": {
         const map: Record<string, AppId> = {
@@ -433,6 +441,8 @@ export class JingHuanOS extends Component<Props, State> {
           stack: "tech",
           blog: "blog",
           contact: "contact",
+          type: "typetest",
+          typetest: "typetest",
         };
         const target = map[arg];
         if (target) {
@@ -553,6 +563,7 @@ export class JingHuanOS extends Component<Props, State> {
       "tech",
       "blog",
       "contact",
+      "type",
       "clear",
     ];
     const chips = chipLabels.map((label) => ({
@@ -653,6 +664,7 @@ export class JingHuanOS extends Component<Props, State> {
         {isOpen.tech && <TechWindow chrome={this.chromeFor("tech")} />}
         {isOpen.blog && <BlogWindow chrome={this.chromeFor("blog")} />}
         {isOpen.contact && <ContactWindow chrome={this.chromeFor("contact")} />}
+        {isOpen.typetest && <TypeTestWindow chrome={this.chromeFor("typetest")} />}
 
         {Object.keys(this.state.windows)
           .filter((k) => k.startsWith("project:") && this.state.windows[k]?.open)
