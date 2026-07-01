@@ -1,4 +1,4 @@
-# JingHuanOS — Tok Jing Huan's Portfolio
+# siteOS — Tok Jing Huan's Portfolio
 
 A personal portfolio built as an interactive desktop operating system. Boot into the
 lock screen, log in, then explore About / Work / Projects / Stack / Blog / Contact as
@@ -38,9 +38,9 @@ bun dev          # start the dev server (http://localhost:3000)
 ```
 public/                  static assets (tahoe-8bit.png wallpaper)
 src/
-  components/os/         the JingHuanOS UI (lock screen, dock, windows, terminal)
+  components/os/         the siteOS UI (lock screen, dock, windows, terminal)
   data/                  content: projects, experience, about, stack, blog, contact
-  routes/                TanStack routes (__root shell + index → JingHuanOS)
+  routes/                TanStack routes (__root shell + index → SiteOS)
   styles.css             Tailwind v4 entry + OS keyframes/animations
 ```
 

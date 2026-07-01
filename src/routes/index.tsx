@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { JingHuanOS } from "../components/os/JingHuanOS";
+import { SiteOS } from "../components/os/SiteOS";
 
 export const Route = createFileRoute("/")({
-  component: JingHuanOS,
+  component: SiteOS,
 });
