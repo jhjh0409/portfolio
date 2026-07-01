@@ -242,25 +242,10 @@ export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
   const live = computeStats(words, committed, input, wordIndex, elapsed);
   const remaining = mode.kind === "time" ? Math.max(0, Math.ceil(mode.value - elapsed)) : null;
 
-  const Caret = () => (
-    <span
-      style={{
-        display: "inline-block",
-        width: 0,
-        borderLeft: `2px solid ${ACCENT}`,
-        height: "1.1em",
-        margin: "0 -1px",
-        verticalAlign: "text-bottom",
-        animation: startedAt == null ? "blink 1s step-end infinite" : "none",
-      }}
-    />
-  );
-
   const renderWord = (target: string, got: string, active: boolean, key: number) => {
     const len = Math.max(target.length, got.length);
     const chars = [];
     for (let j = 0; j < len; j++) {
-      if (active && j === got.length) chars.push(<Caret key={`c${j}`} />);
       const tc = target[j];
       const gc = got[j];
       let color = MUTED;
@@ -271,13 +256,34 @@ export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
         </span>,
       );
     }
-    if (active && got.length >= len) chars.push(<Caret key="cend" />);
     return (
       <span
         key={key}
         ref={active ? activeWordRef : undefined}
-        style={{ marginRight: "0.65ch", whiteSpace: "nowrap" }}
+        style={{
+          position: "relative",
+          flex: "0 0 auto",
+          marginRight: "0.6ch",
+          whiteSpace: "nowrap",
+        }}
       >
+        {/* Caret is absolutely positioned (monospace → left = got.length ch), so it never
+            changes the word's width — upcoming words stay put while you type. */}
+        {active && (
+          <span
+            aria-hidden
+            style={{
+              position: "absolute",
+              left: `${got.length}ch`,
+              top: "50%",
+              width: 0,
+              height: "1.3em",
+              borderLeft: `2px solid ${ACCENT}`,
+              transform: "translate(-1px, -50%)",
+              animation: startedAt == null ? "blink 1s step-end infinite" : "none",
+            }}
+          />
+        )}
         {chars}
       </span>
     );
@@ -450,12 +456,14 @@ export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
                 height: WORD_LINES * WORD_LINE,
                 overflow: "hidden",
                 fontSize: WORD_FONT,
-                letterSpacing: 0.2,
               }}
             >
               <div
                 style={{
                   position: "relative",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignContent: "flex-start",
                   lineHeight: `${WORD_LINE}px`,
                   color: MUTED,
                   transform: `translateY(${-scrollY}px)`,
