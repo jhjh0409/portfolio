@@ -50,6 +50,7 @@ interface State {
   windows: Record<string, WinState>;
   zTop: number;
   activeId: string | null;
+  zoomId: string | null;
   iconPos: Partial<Record<AppId, { x: number; y: number }>>;
   isMobile: boolean;
   cmd: string;
@@ -63,6 +64,7 @@ export class JingHuanOS extends Component<Props, State> {
   private inputRef = createRef<HTMLInputElement>();
   private dragging: Drag | null = null;
   private clockT: ReturnType<typeof setInterval> | null = null;
+  private zoomT: ReturnType<typeof setTimeout> | null = null;
 
   constructor(props: Props) {
     super(props);
@@ -73,6 +75,7 @@ export class JingHuanOS extends Component<Props, State> {
       windows: {},
       zTop: 20,
       activeId: null,
+      zoomId: null,
       iconPos: {},
       isMobile: false,
       cmd: "",
@@ -97,6 +100,7 @@ export class JingHuanOS extends Component<Props, State> {
     document.removeEventListener("mousemove", this.onMove);
     document.removeEventListener("mouseup", this.onUp);
     if (this.clockT) clearInterval(this.clockT);
+    if (this.zoomT) clearTimeout(this.zoomT);
   }
 
   // ---- time helpers -------------------------------------------------------
@@ -109,7 +113,9 @@ export class JingHuanOS extends Component<Props, State> {
   }
 
   // ---- responsiveness -----------------------------------------------------
-  private onResize = () => this.detectMobile();
+  // Re-render on every resize so maximized windows (pixel-sized, for the zoom
+  // animation) keep tracking the viewport.
+  private onResize = () => this.setState({ isMobile: window.innerWidth < 760 });
 
   private detectMobile() {
     const m = window.innerWidth < 760;
@@ -265,6 +271,9 @@ export class JingHuanOS extends Component<Props, State> {
   }
 
   private toggleMax(id: string) {
+    // Flip max + arm the zoom transition in one commit; the window is already
+    // mounted, so CSS animates from its current rect to the new one. Disarm the
+    // transition afterwards so it never lags dragging.
     this.setState((s) => {
       const z = s.zTop + 1;
       const cur = s.windows[id] || {};
@@ -272,8 +281,11 @@ export class JingHuanOS extends Component<Props, State> {
         windows: { ...s.windows, [id]: { ...cur, max: !cur.max, z } },
         zTop: z,
         activeId: id,
+        zoomId: id,
       };
     });
+    if (this.zoomT) clearTimeout(this.zoomT);
+    this.zoomT = setTimeout(() => this.setState({ zoomId: null }), 260);
   }
 
   private dockClick = (id: AppId) => {
@@ -299,16 +311,22 @@ export class JingHuanOS extends Component<Props, State> {
       borderRadius: 10,
       boxShadow: "0 16px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.04)",
       zIndex: s.z || 10,
+      transition:
+        this.state.zoomId === id
+          ? "left .22s ease, top .22s ease, width .22s ease, height .22s ease"
+          : undefined,
     };
     if (this.state.isMobile || s.max) {
+      // Pixel dimensions (not right/bottom + auto) so the zoom transition can interpolate.
+      const pad = 8;
+      const top = 38;
+      const bottomGap = 86;
       return {
         ...base,
-        left: 8,
-        right: 8,
-        top: 38,
-        bottom: 86,
-        width: "auto",
-        height: "auto",
+        left: pad,
+        top,
+        width: window.innerWidth - pad * 2,
+        height: window.innerHeight - top - bottomGap,
       };
     }
     const def0 = this.defaultPos(id);
