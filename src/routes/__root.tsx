@@ -30,11 +30,7 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "JingHuanOS" },
-      {
-        name: "description",
-        content:
-          "The personal operating system of Tok Jing Huan — Computer Science & Design student at SUTD and aspiring software engineer. Boot in, open a window, or drop into the terminal.",
-      },
+      { name: "description", content: "Tok Jing Huan's Portfolio" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
