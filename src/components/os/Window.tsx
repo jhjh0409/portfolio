@@ -49,6 +49,7 @@ export function Window({
     <div className="win" style={chrome.style} onMouseDown={chrome.onFocus}>
       <div
         onMouseDown={chrome.onDrag}
+        onDoubleClick={chrome.onMax}
         style={{
           height: 30,
           display: "flex",
