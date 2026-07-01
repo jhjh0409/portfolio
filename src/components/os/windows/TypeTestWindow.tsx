@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import { Window, type WindowChrome } from "../Window";
 import { windowTitle } from "../apps";
 import { buildSequence } from "../../../data/typetest";
@@ -7,6 +14,10 @@ const ACCENT = "#e2b714";
 const MUTED = "#565b66";
 const CORRECT = "#d7dce3";
 const INCORRECT = "#ff8a7a";
+
+const WORD_FONT = 22; // px
+const WORD_LINE = 40; // px per visible line
+const WORD_LINES = 3; // visible lines in the strip
 
 const TIME_OPTIONS = [15, 30, 60];
 const WORD_OPTIONS = [25, 50];
@@ -86,8 +97,9 @@ export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
   const [best, setBest] = useState<number | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const caretRef = useRef<HTMLSpanElement>(null);
+  const activeWordRef = useRef<HTMLSpanElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [scrollY, setScrollY] = useState(0);
 
   const focusInput = useCallback(() => inputRef.current?.focus(), []);
 
@@ -164,10 +176,17 @@ export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
     }
   }, [now, startedAt, finished, mode, committed, input, wordIndex, finishWith]);
 
-  // keep the caret in view
-  useEffect(() => {
-    caretRef.current?.scrollIntoView({ block: "nearest" });
-  }, [wordIndex, input, words]);
+  // scroll the word strip in whole-line steps so the active line stays put (no per-key jitter)
+  useLayoutEffect(() => {
+    const el = activeWordRef.current;
+    if (!el) {
+      if (scrollY !== 0) setScrollY(0);
+      return;
+    }
+    const line = Math.round(el.offsetTop / WORD_LINE);
+    const next = Math.max(0, (line - 1) * WORD_LINE);
+    if (next !== scrollY) setScrollY(next);
+  }, [wordIndex, input, words, finished, scrollY]);
 
   const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Tab") {
@@ -223,9 +242,8 @@ export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
   const live = computeStats(words, committed, input, wordIndex, elapsed);
   const remaining = mode.kind === "time" ? Math.max(0, Math.ceil(mode.value - elapsed)) : null;
 
-  const Caret = ({ active }: { active: boolean }) => (
+  const Caret = () => (
     <span
-      ref={active ? caretRef : undefined}
       style={{
         display: "inline-block",
         width: 0,
@@ -242,7 +260,7 @@ export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
     const len = Math.max(target.length, got.length);
     const chars = [];
     for (let j = 0; j < len; j++) {
-      if (active && j === got.length) chars.push(<Caret key={`c${j}`} active />);
+      if (active && j === got.length) chars.push(<Caret key={`c${j}`} />);
       const tc = target[j];
       const gc = got[j];
       let color = MUTED;
@@ -253,9 +271,13 @@ export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
         </span>,
       );
     }
-    if (active && got.length >= len) chars.push(<Caret key="cend" active />);
+    if (active && got.length >= len) chars.push(<Caret key="cend" />);
     return (
-      <span key={key} style={{ marginRight: "0.65ch", whiteSpace: "nowrap" }}>
+      <span
+        key={key}
+        ref={active ? activeWordRef : undefined}
+        style={{ marginRight: "0.65ch", whiteSpace: "nowrap" }}
+      >
         {chars}
       </span>
     );
@@ -424,24 +446,31 @@ export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
 
             {/* words */}
             <div
-              className="jhos-noscroll"
               style={{
-                height: "5.4em",
-                overflowY: "auto",
-                fontSize: 21,
-                lineHeight: 1.75,
-                color: MUTED,
+                height: WORD_LINES * WORD_LINE,
+                overflow: "hidden",
+                fontSize: WORD_FONT,
                 letterSpacing: 0.2,
               }}
             >
-              {words.map((w, wi) =>
-                renderWord(
-                  w,
-                  wi < wordIndex ? (committed[wi] ?? "") : wi === wordIndex ? input : "",
-                  wi === wordIndex,
-                  wi,
-                ),
-              )}
+              <div
+                style={{
+                  position: "relative",
+                  lineHeight: `${WORD_LINE}px`,
+                  color: MUTED,
+                  transform: `translateY(${-scrollY}px)`,
+                  transition: "transform 0.12s ease",
+                }}
+              >
+                {words.map((w, wi) =>
+                  renderWord(
+                    w,
+                    wi < wordIndex ? (committed[wi] ?? "") : wi === wordIndex ? input : "",
+                    wi === wordIndex,
+                    wi,
+                  ),
+                )}
+              </div>
             </div>
 
             <div style={{ color: "#5a5f6a", fontSize: 12, marginTop: 14 }}>
