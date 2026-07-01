@@ -48,5 +48,6 @@ Content lives in `src/data/*` — edit those files to update projects, experienc
 
 ## Deployment
 
-The Cloudflare Vite plugin is wired up via `@lovable.dev/vite-tanstack-config`. Build with
-`bun run build` and deploy the output with Wrangler.
+Hosted on Vercel. The app uses TanStack Start with the [Nitro](https://nitro.build) Vite plugin,
+which Vercel detects and runs on Vercel Functions — pushes to `main` auto-deploy. `bun run build`
+produces a Nitro build (`.output` locally, `.vercel/output` in CI).
