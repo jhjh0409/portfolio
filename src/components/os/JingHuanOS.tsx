@@ -385,7 +385,7 @@ export class JingHuanOS extends Component<Props, State> {
           O("  tech         — my stack (alias: neofetch)"),
           O("  blog         — recent writing"),
           O("  contact      — say hello"),
-          O("  type         — typing speed test"),
+          O("  typeracer    — typing speed test"),
           O("  open <app>   — launch a window"),
           O("  ls · clear · whoami · date · echo"),
           O("Tip: every app is clickable in the dock below.", "#6b707b"),
@@ -442,9 +442,10 @@ export class JingHuanOS extends Component<Props, State> {
         break;
       case "type":
       case "typetest":
+      case "typeracer":
       case "mtype":
         this.openApp("typetest");
-        this.pushLines([O("› launching typing test — go fast …", "#9aa0ac")]);
+        this.pushLines([O("› launching Typeracer — go fast …", "#9aa0ac")]);
         break;
       case "open":
       case "launch": {
@@ -461,6 +462,7 @@ export class JingHuanOS extends Component<Props, State> {
           contact: "contact",
           type: "typetest",
           typetest: "typetest",
+          typeracer: "typetest",
         };
         const target = map[arg];
         if (target) {
@@ -581,7 +583,7 @@ export class JingHuanOS extends Component<Props, State> {
       "tech",
       "blog",
       "contact",
-      "type",
+      "typeracer",
       "clear",
     ];
     const chips = chipLabels.map((label) => ({
