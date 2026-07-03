@@ -58,9 +58,33 @@ export function ExperienceWindow({ chrome }: { chrome: WindowChrome }) {
                 <div style={{ color: "#f2b65c", fontSize: 12.5, margin: "2px 0 8px" }}>
                   {exp.role}
                 </div>
-                <p style={{ margin: "0 0 10px", color: "#b7bcc5", lineHeight: 1.6 }}>
-                  {exp.description}
-                </p>
+                <ul
+                  style={{
+                    listStyle: "none",
+                    margin: "0 0 10px",
+                    padding: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                  }}
+                >
+                  {exp.highlights.map((h, hi) => (
+                    <li
+                      key={hi}
+                      style={{
+                        display: "flex",
+                        gap: 8,
+                        color: "#b7bcc5",
+                        lineHeight: 1.55,
+                      }}
+                    >
+                      <span aria-hidden style={{ color: "#f2b65c", flexShrink: 0 }}>
+                        ▸
+                      </span>
+                      <span>{h}</span>
+                    </li>
+                  ))}
+                </ul>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
                   {exp.tags.map((tag) => (
                     <span
