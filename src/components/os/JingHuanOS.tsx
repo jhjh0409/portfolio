@@ -675,11 +675,26 @@ export class JingHuanOS extends Component<Props, State> {
       "typeracer",
       "clear",
     ];
+    // Clicking a module chip spawns its window (like the dock); help/clear stay terminal commands.
+    const chipApp: Record<string, AppId> = {
+      about: "about",
+      projects: "projects",
+      experience: "experience",
+      tech: "tech",
+      blog: "blog",
+      contact: "contact",
+      typeracer: "typetest",
+    };
     const chips = chipLabels.map((label) => ({
       label,
       run: () => {
-        this.runCommand(label);
-        this.focusInput();
+        const app = chipApp[label];
+        if (app) {
+          this.openApp(app);
+        } else {
+          this.runCommand(label);
+          this.focusInput();
+        }
       },
     }));
 
