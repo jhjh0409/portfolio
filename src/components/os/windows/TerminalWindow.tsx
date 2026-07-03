@@ -1,11 +1,26 @@
-import type { RefObject, KeyboardEvent, ChangeEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  type RefObject,
+  type KeyboardEvent,
+  type ChangeEvent,
+  type ReactNode,
+} from "react";
 import { Window, type WindowChrome } from "../Window";
-import { windowTitle } from "../apps";
+import { windowTitle, appById, type SectionId } from "../apps";
 
-export interface TermLine {
+export interface TermText {
   text: string;
   color: string;
 }
+export interface TermBlock {
+  block: SectionId;
+}
+/** A terminal output item: a coloured text line, or an inline-rendered app section. */
+export type TermItem = TermText | TermBlock;
+/** Text-line alias (used by the orchestrator's line helpers). */
+export type TermLine = TermText;
+
 export interface TermChip {
   label: string;
   run: () => void;
@@ -13,27 +28,38 @@ export interface TermChip {
 
 export function TerminalWindow({
   chrome,
-  lines,
+  items,
   cmd,
   inputRef,
   onCmdChange,
   onCmdKey,
   onFocusInput,
+  renderSection,
   chips,
 }: {
   chrome: WindowChrome;
-  lines: TermLine[];
+  items: TermItem[];
   cmd: string;
   inputRef: RefObject<HTMLInputElement | null>;
   onCmdChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onCmdKey: (e: KeyboardEvent<HTMLInputElement>) => void;
   onFocusInput: () => void;
+  renderSection: (section: SectionId) => ReactNode;
   chips: TermChip[];
 }) {
   const t = windowTitle.terminal;
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // keep the newest output (and the prompt) in view as items are appended
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [items]);
+
   return (
     <Window chrome={chrome} title={t.text} titleColor={t.color}>
       <div
+        ref={scrollRef}
         onClick={onFocusInput}
         style={{
           flex: 1,
@@ -43,19 +69,34 @@ export function TerminalWindow({
           fontSize: 13.5,
         }}
       >
-        {lines.map((ln, i) => (
-          <div
-            key={i}
-            style={{
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-              color: ln.color,
-              minHeight: 20,
-            }}
-          >
-            {ln.text}
-          </div>
-        ))}
+        {items.map((it, i) =>
+          "block" in it ? (
+            <div
+              key={i}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                margin: "6px 0 12px",
+                borderLeft: `2px solid ${appById[it.block].accent}`,
+                borderRadius: "0 6px 6px 0",
+                background: "rgba(255,255,255,.015)",
+              }}
+            >
+              {renderSection(it.block)}
+            </div>
+          ) : (
+            <div
+              key={i}
+              style={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                color: it.color,
+                minHeight: 20,
+              }}
+            >
+              {it.text}
+            </div>
+          ),
+        )}
         <div style={{ display: "flex", alignItems: "center", gap: 7, marginTop: 2 }}>
           <span style={{ color: "#3ddc91", whiteSpace: "nowrap" }}>tjh@jinghuan</span>
           <span style={{ color: "#6b707b" }}>:</span>

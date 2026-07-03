@@ -8,6 +8,9 @@ export type AppId =
   | "contact"
   | "typetest";
 
+/** App sections whose content the terminal can render inline (typed command → in-window output). */
+export type SectionId = "about" | "experience" | "projects" | "tech" | "blog" | "contact";
+
 export interface AppDef {
   id: AppId;
   title: string;
@@ -18,7 +21,7 @@ export interface AppDef {
 
 /** Registry — order drives dock + desktop-icon layout. */
 export const apps: AppDef[] = [
-  { id: "terminal", title: "Terminal", accent: "#3ddc91", def: { x: 54, y: 64, w: 640, h: 430 } },
+  { id: "terminal", title: "Terminal", accent: "#3ddc91", def: { x: 54, y: 64, w: 660, h: 480 } },
   { id: "about", title: "About", accent: "#6ea8fe", def: { x: 150, y: 104, w: 600, h: 470 } },
   { id: "experience", title: "Work", accent: "#f2b65c", def: { x: 200, y: 84, w: 660, h: 500 } },
   { id: "projects", title: "Projects", accent: "#b08cff", def: { x: 250, y: 118, w: 700, h: 500 } },

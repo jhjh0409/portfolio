@@ -1,17 +1,17 @@
 import { Component, createRef, type MouseEvent as ReactMouseEvent } from "react";
-import { apps, appById, type AppId } from "./apps";
+import { apps, appById, type AppId, type SectionId } from "./apps";
 import { Lockscreen } from "./Lockscreen";
 import { MenuBar } from "./MenuBar";
 import { Dock } from "./Dock";
 import { DesktopIcons } from "./DesktopIcons";
 import type { WindowChrome } from "./Window";
-import { TerminalWindow, type TermLine } from "./windows/TerminalWindow";
-import { AboutWindow } from "./windows/AboutWindow";
-import { ExperienceWindow } from "./windows/ExperienceWindow";
-import { ProjectsWindow } from "./windows/ProjectsWindow";
-import { TechWindow } from "./windows/TechWindow";
-import { BlogWindow } from "./windows/BlogWindow";
-import { ContactWindow } from "./windows/ContactWindow";
+import { TerminalWindow, type TermLine, type TermItem } from "./windows/TerminalWindow";
+import { AboutWindow, AboutContent } from "./windows/AboutWindow";
+import { ExperienceWindow, ExperienceContent } from "./windows/ExperienceWindow";
+import { ProjectsWindow, ProjectsContent } from "./windows/ProjectsWindow";
+import { TechWindow, TechContent } from "./windows/TechWindow";
+import { BlogWindow, BlogContent } from "./windows/BlogWindow";
+import { ContactWindow, ContactContent } from "./windows/ContactWindow";
 import { ProjectDetailWindow } from "./windows/ProjectDetailWindow";
 import { TypeTestWindow } from "./windows/TypeTestWindow";
 import { projects, getProjectById, projectAccent } from "../../data/projects";
@@ -56,7 +56,7 @@ interface State {
   cmd: string;
   history: string[];
   histIdx: number;
-  lines: TermLine[];
+  lines: TermItem[];
 }
 
 /** JingHuanOS — a desktop-OS portfolio. Port of the Design-Composer DCLogic. */
@@ -359,8 +359,28 @@ export class JingHuanOS extends Component<Props, State> {
     return { text, color: color || "#c7ccd4" };
   }
 
-  private pushLines(arr: TermLine[]) {
+  private pushLines(arr: TermItem[]) {
     this.setState((s) => ({ lines: [...s.lines, ...arr].slice(-260) }));
+  }
+
+  /** Render an app section's content inline in the terminal (typed command → in-window output). */
+  private renderSection(section: SectionId) {
+    switch (section) {
+      case "about":
+        return <AboutContent onOpen={(id) => this.openApp(id)} />;
+      case "experience":
+        return <ExperienceContent />;
+      case "projects":
+        return <ProjectsContent onOpenProject={(id) => this.openProject(id)} />;
+      case "tech":
+        return <TechContent />;
+      case "blog":
+        return <BlogContent />;
+      case "contact":
+        return <ContactContent />;
+      default:
+        return null;
+    }
   }
 
   private runCommand = (raw: string) => {
@@ -393,52 +413,44 @@ export class JingHuanOS extends Component<Props, State> {
         break;
       case "about":
       case "whoami":
-        this.openApp("about");
-        this.pushLines([
-          O(
-            "› Tok Jing Huan — aspiring SWE & former motion designer. Opening about_me.txt …",
-            "#9aa0ac",
-          ),
-        ]);
+        this.pushLines([{ block: "about" }]);
         break;
       case "experience":
       case "work":
       case "exp":
-        this.openApp("experience");
-        this.pushLines([O("› CPF Board · GenVoice — opening work log …", "#9aa0ac")]);
+        this.pushLines([{ block: "experience" }]);
         break;
       case "projects":
       case "project":
         if (arg && getProjectById(arg)) {
           this.openProject(arg);
-          this.pushLines([O("› opening ~/projects/" + arg + " …", "#9aa0ac")]);
+          this.pushLines([O("› opening ~/projects/" + arg + " in a new window …", "#9aa0ac")]);
         } else {
-          this.openApp("projects");
-          this.pushLines([
+          this.pushLines(
             arg
-              ? O("› no project '" + arg + "' — opening ~/projects …", "#9aa0ac")
-              : O("› opening ~/projects …", "#9aa0ac"),
-          ]);
+              ? [
+                  O("› no project '" + arg + "' — listing ~/projects …", "#9aa0ac"),
+                  { block: "projects" },
+                ]
+              : [{ block: "projects" }],
+          );
         }
         break;
       case "tech":
       case "skills":
       case "stack":
       case "neofetch":
-        this.openApp("tech");
-        this.pushLines([O("› fetching system specs …", "#9aa0ac")]);
+        this.pushLines([{ block: "tech" }]);
         break;
       case "blog":
       case "blogs":
-        this.openApp("blog");
-        this.pushLines([O("› tailing blog feed …", "#9aa0ac")]);
+        this.pushLines([{ block: "blog" }]);
         break;
       case "contact":
       case "socials":
       case "social":
       case "email":
-        this.openApp("contact");
-        this.pushLines([O("› opening secure channel …", "#9aa0ac")]);
+        this.pushLines([{ block: "contact" }]);
         break;
       case "type":
       case "typetest":
@@ -662,12 +674,13 @@ export class JingHuanOS extends Component<Props, State> {
         {isOpen.terminal && (
           <TerminalWindow
             chrome={this.chromeFor("terminal")}
-            lines={this.state.lines}
+            items={this.state.lines}
             cmd={this.state.cmd}
             inputRef={this.inputRef}
             onCmdChange={this.onCmdChange}
             onCmdKey={this.onCmdKey}
             onFocusInput={() => this.focusInput()}
+            renderSection={(section) => this.renderSection(section)}
             chips={chips}
           />
         )}
