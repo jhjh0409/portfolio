@@ -4,7 +4,7 @@ import { Lockscreen } from "./Lockscreen";
 import { MenuBar } from "./MenuBar";
 import { Dock } from "./Dock";
 import { DesktopIcons } from "./DesktopIcons";
-import type { WindowChrome } from "./Window";
+import type { WindowChrome, ResizeEdge } from "./Window";
 import { TerminalWindow, type TermLine, type TermItem } from "./windows/TerminalWindow";
 import { AboutWindow, AboutContent } from "./windows/AboutWindow";
 import { ExperienceWindow, ExperienceContent } from "./windows/ExperienceWindow";
@@ -24,6 +24,8 @@ interface WinState {
   open?: boolean;
   x?: number;
   y?: number;
+  w?: number;
+  h?: number;
   z?: number;
   max?: boolean;
 }
@@ -36,6 +38,17 @@ interface Drag {
   ox: number;
   oy: number;
   moved?: boolean;
+}
+
+interface Resize {
+  id: string;
+  edge: ResizeEdge;
+  sx: number;
+  sy: number;
+  ox: number;
+  oy: number;
+  ow: number;
+  oh: number;
 }
 
 interface Props {
@@ -63,6 +76,7 @@ interface State {
 export class JingHuanOS extends Component<Props, State> {
   private inputRef = createRef<HTMLInputElement>();
   private dragging: Drag | null = null;
+  private resizing: Resize | null = null;
   private clockT: ReturnType<typeof setInterval> | null = null;
   private zoomT: ReturnType<typeof setTimeout> | null = null;
 
@@ -124,6 +138,10 @@ export class JingHuanOS extends Component<Props, State> {
 
   // ---- dragging -----------------------------------------------------------
   private onMove = (e: MouseEvent) => {
+    if (this.resizing) {
+      this.onResizeMove(e);
+      return;
+    }
     const d = this.dragging;
     if (!d) return;
     const nx = d.ox + (e.clientX - d.sx);
@@ -141,10 +159,67 @@ export class JingHuanOS extends Component<Props, State> {
   };
 
   private onUp = () => {
+    if (this.resizing) {
+      this.resizing = null;
+      return;
+    }
     const d = this.dragging;
     this.dragging = null;
     if (d && d.kind === "icon" && !d.moved) this.openApp(d.id);
   };
+
+  // ---- resizing -----------------------------------------------------------
+  private startResize = (id: string, edge: ResizeEdge, e: ReactMouseEvent) => {
+    if (this.state.isMobile) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const cur = this.state.windows[id] || {};
+    const meta = this.winMeta(id);
+    const def0 = this.defaultPos(id);
+    this.resizing = {
+      id,
+      edge,
+      sx: e.clientX,
+      sy: e.clientY,
+      ox: cur.x ?? def0.x,
+      oy: cur.y ?? def0.y,
+      ow: cur.w ?? meta.def.w,
+      oh: cur.h ?? meta.def.h,
+    };
+    this.focusApp(id);
+  };
+
+  private onResizeMove(e: MouseEvent) {
+    const r = this.resizing;
+    if (!r) return;
+    const MIN_W = 320;
+    const MIN_H = 220;
+    const TOP = 32; // keep the title bar below the menu bar
+    const dx = e.clientX - r.sx;
+    const dy = e.clientY - r.sy;
+    const right = r.ox + r.ow; // fixed edge when dragging from the left
+    const bottom = r.oy + r.oh; // fixed edge when dragging from the top
+
+    let x = r.ox;
+    let y = r.oy;
+    let w = r.ow;
+    let h = r.oh;
+
+    if (r.edge.includes("e")) w = Math.max(MIN_W, r.ow + dx);
+    if (r.edge.includes("s")) h = Math.max(MIN_H, r.oh + dy);
+    if (r.edge.includes("w")) {
+      x = Math.min(right - MIN_W, r.ox + dx);
+      w = right - x;
+    }
+    if (r.edge.includes("n")) {
+      y = Math.max(TOP, Math.min(bottom - MIN_H, r.oy + dy));
+      h = bottom - y;
+    }
+
+    this.setState((s) => ({
+      windows: { ...s.windows, [r.id]: { ...s.windows[r.id], x, y, w, h } },
+    }));
+  }
 
   /** Geometry + accent for any window id — apps come from the registry, project:<id> is computed. */
   private winMeta(id: string): {
@@ -334,8 +409,8 @@ export class JingHuanOS extends Component<Props, State> {
       ...base,
       left: s.x ?? def0.x,
       top: s.y ?? def0.y,
-      width: def.w,
-      height: def.h,
+      width: s.w ?? def.w,
+      height: s.h ?? def.h,
     };
   }
 
@@ -347,6 +422,8 @@ export class JingHuanOS extends Component<Props, State> {
       onClose: () => this.closeApp(id),
       onMin: () => this.closeApp(id),
       onMax: () => this.toggleMax(id),
+      onResizeStart: (edge, e) => this.startResize(id, edge, e),
+      resizable: !this.state.isMobile && !this.state.windows[id]?.max,
     };
   }
 
