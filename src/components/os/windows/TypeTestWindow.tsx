@@ -82,9 +82,7 @@ function computeStats(
   };
 }
 
-export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
-  const t = windowTitle.typetest;
-
+export function TypeTestContent() {
   const [mode, setMode] = useState<Mode>({ kind: "time", value: 30 });
   const [words, setWords] = useState<string[]>(() => gen({ kind: "time", value: 30 }));
   const [committed, setCommitted] = useState<string[]>([]);
@@ -309,184 +307,189 @@ export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
   );
 
   return (
-    <Window chrome={chrome} title={t.text} titleColor={t.color}>
+    <div
+      onClick={focusInput}
+      style={{
+        flex: 1,
+        overflowY: "auto",
+        padding: "18px 22px",
+        background: "#15171b",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {/* hidden capture input (keeps mobile keyboard available) */}
+      <input
+        ref={inputRef}
+        value=""
+        onChange={() => {}}
+        onKeyDown={onKey}
+        spellCheck={false}
+        autoComplete="off"
+        autoCapitalize="off"
+        aria-label="typing test input"
+        style={{ position: "absolute", opacity: 0, width: 1, height: 1, pointerEvents: "none" }}
+      />
+
+      {/* mode selector */}
       <div
-        onClick={focusInput}
         style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "18px 22px",
-          background: "#15171b",
           display: "flex",
-          flexDirection: "column",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: 6,
+          marginBottom: 16,
         }}
       >
-        {/* hidden capture input (keeps mobile keyboard available) */}
-        <input
-          ref={inputRef}
-          value=""
-          onChange={() => {}}
-          onKeyDown={onKey}
-          spellCheck={false}
-          autoComplete="off"
-          autoCapitalize="off"
-          aria-label="typing test input"
-          style={{ position: "absolute", opacity: 0, width: 1, height: 1, pointerEvents: "none" }}
-        />
-
-        {/* mode selector */}
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            gap: 6,
-            marginBottom: 16,
-          }}
-        >
-          <span style={{ color: "#6b707b", fontSize: 11.5, marginRight: 2 }}>time</span>
-          {TIME_OPTIONS.map((v) =>
-            chip(String(v), mode.kind === "time" && mode.value === v, () =>
-              restart({ kind: "time", value: v }),
-            ),
-          )}
-          <span style={{ width: 10 }} />
-          <span style={{ color: "#6b707b", fontSize: 11.5, marginRight: 2 }}>words</span>
-          {WORD_OPTIONS.map((v) =>
-            chip(String(v), mode.kind === "words" && mode.value === v, () =>
-              restart({ kind: "words", value: v }),
-            ),
-          )}
-        </div>
-
-        {finished && stats ? (
-          <div style={{ paddingTop: 10 }}>
-            <div style={{ color: "#6b707b", fontSize: 12 }}>wpm</div>
-            <div
-              style={{
-                fontFamily: "'VT323',monospace",
-                fontSize: 74,
-                lineHeight: 1,
-                color: ACCENT,
-                textShadow: "0 2px 14px rgba(226,183,20,.25)",
-              }}
-            >
-              {stats.wpm}
-            </div>
-            <div
-              style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 14, fontSize: 13 }}
-            >
-              <span style={{ color: "#aeb4be" }}>
-                <span style={{ color: "#6b707b" }}>acc </span>
-                {stats.acc}%
-              </span>
-              <span style={{ color: "#aeb4be" }}>
-                <span style={{ color: "#6b707b" }}>raw </span>
-                {stats.raw}
-              </span>
-              <span style={{ color: "#aeb4be" }}>
-                <span style={{ color: "#6b707b" }}>time </span>
-                {stats.seconds}s
-              </span>
-              <span style={{ color: "#aeb4be" }}>
-                <span style={{ color: "#6b707b" }}>chars </span>
-                <span style={{ color: "#3ddc91" }}>{stats.correct}</span>
-                <span style={{ color: "#6b707b" }}>/</span>
-                <span style={{ color: INCORRECT }}>{stats.incorrect}</span>
-              </span>
-              {best != null && (
-                <span style={{ color: "#aeb4be" }}>
-                  <span style={{ color: "#6b707b" }}>best </span>
-                  {best}
-                </span>
-              )}
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 20 }}>
-              <span
-                className="jhos-linkcard"
-                onClick={() => restart(mode)}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  border: "1px solid #262a31",
-                  borderRadius: 6,
-                  padding: "8px 16px",
-                  background: "#16181c",
-                  color: "#e9ebef",
-                  fontSize: 13,
-                  cursor: "default",
-                }}
-              >
-                <span style={{ color: ACCENT }}>↻</span> restart
-              </span>
-              <span style={{ color: "#5a5f6a", fontSize: 12 }}>tab — restart</span>
-            </div>
-          </div>
-        ) : (
-          <>
-            {/* live status */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: 16,
-                marginBottom: 12,
-                height: 26,
-              }}
-            >
-              <span
-                style={{
-                  color: ACCENT,
-                  fontFamily: "'VT323',monospace",
-                  fontSize: 26,
-                  lineHeight: 1,
-                }}
-              >
-                {mode.kind === "time" ? `${remaining}` : `${wordIndex}/${words.length}`}
-              </span>
-              {startedAt != null && (
-                <span style={{ color: "#6b707b", fontSize: 12.5 }}>{live.wpm} wpm</span>
-              )}
-            </div>
-
-            {/* words */}
-            <div
-              style={{
-                height: WORD_LINES * WORD_LINE,
-                overflow: "hidden",
-                fontSize: WORD_FONT,
-              }}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  flexWrap: "wrap",
-                  alignContent: "flex-start",
-                  lineHeight: `${WORD_LINE}px`,
-                  color: MUTED,
-                  transform: `translateY(${-scrollY}px)`,
-                  transition: "transform 0.12s ease",
-                }}
-              >
-                {words.map((w, wi) =>
-                  renderWord(
-                    w,
-                    wi < wordIndex ? (committed[wi] ?? "") : wi === wordIndex ? input : "",
-                    wi === wordIndex,
-                    wi,
-                  ),
-                )}
-              </div>
-            </div>
-
-            <div style={{ color: "#5a5f6a", fontSize: 12, marginTop: 14 }}>
-              {startedAt == null ? "click here and start typing" : "tab — restart"}
-            </div>
-          </>
+        <span style={{ color: "#6b707b", fontSize: 11.5, marginRight: 2 }}>time</span>
+        {TIME_OPTIONS.map((v) =>
+          chip(String(v), mode.kind === "time" && mode.value === v, () =>
+            restart({ kind: "time", value: v }),
+          ),
+        )}
+        <span style={{ width: 10 }} />
+        <span style={{ color: "#6b707b", fontSize: 11.5, marginRight: 2 }}>words</span>
+        {WORD_OPTIONS.map((v) =>
+          chip(String(v), mode.kind === "words" && mode.value === v, () =>
+            restart({ kind: "words", value: v }),
+          ),
         )}
       </div>
+
+      {finished && stats ? (
+        <div style={{ paddingTop: 10 }}>
+          <div style={{ color: "#6b707b", fontSize: 12 }}>wpm</div>
+          <div
+            style={{
+              fontFamily: "'VT323',monospace",
+              fontSize: 74,
+              lineHeight: 1,
+              color: ACCENT,
+              textShadow: "0 2px 14px rgba(226,183,20,.25)",
+            }}
+          >
+            {stats.wpm}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 14, fontSize: 13 }}>
+            <span style={{ color: "#aeb4be" }}>
+              <span style={{ color: "#6b707b" }}>acc </span>
+              {stats.acc}%
+            </span>
+            <span style={{ color: "#aeb4be" }}>
+              <span style={{ color: "#6b707b" }}>raw </span>
+              {stats.raw}
+            </span>
+            <span style={{ color: "#aeb4be" }}>
+              <span style={{ color: "#6b707b" }}>time </span>
+              {stats.seconds}s
+            </span>
+            <span style={{ color: "#aeb4be" }}>
+              <span style={{ color: "#6b707b" }}>chars </span>
+              <span style={{ color: "#3ddc91" }}>{stats.correct}</span>
+              <span style={{ color: "#6b707b" }}>/</span>
+              <span style={{ color: INCORRECT }}>{stats.incorrect}</span>
+            </span>
+            {best != null && (
+              <span style={{ color: "#aeb4be" }}>
+                <span style={{ color: "#6b707b" }}>best </span>
+                {best}
+              </span>
+            )}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 20 }}>
+            <span
+              className="jhos-linkcard"
+              onClick={() => restart(mode)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                border: "1px solid #262a31",
+                borderRadius: 6,
+                padding: "8px 16px",
+                background: "#16181c",
+                color: "#e9ebef",
+                fontSize: 13,
+                cursor: "default",
+              }}
+            >
+              <span style={{ color: ACCENT }}>↻</span> restart
+            </span>
+            <span style={{ color: "#5a5f6a", fontSize: 12 }}>tab — restart</span>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* live status */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              gap: 16,
+              marginBottom: 12,
+              height: 26,
+            }}
+          >
+            <span
+              style={{
+                color: ACCENT,
+                fontFamily: "'VT323',monospace",
+                fontSize: 26,
+                lineHeight: 1,
+              }}
+            >
+              {mode.kind === "time" ? `${remaining}` : `${wordIndex}/${words.length}`}
+            </span>
+            {startedAt != null && (
+              <span style={{ color: "#6b707b", fontSize: 12.5 }}>{live.wpm} wpm</span>
+            )}
+          </div>
+
+          {/* words */}
+          <div
+            style={{
+              height: WORD_LINES * WORD_LINE,
+              overflow: "hidden",
+              fontSize: WORD_FONT,
+            }}
+          >
+            <div
+              style={{
+                position: "relative",
+                display: "flex",
+                flexWrap: "wrap",
+                alignContent: "flex-start",
+                lineHeight: `${WORD_LINE}px`,
+                color: MUTED,
+                transform: `translateY(${-scrollY}px)`,
+                transition: "transform 0.12s ease",
+              }}
+            >
+              {words.map((w, wi) =>
+                renderWord(
+                  w,
+                  wi < wordIndex ? (committed[wi] ?? "") : wi === wordIndex ? input : "",
+                  wi === wordIndex,
+                  wi,
+                ),
+              )}
+            </div>
+          </div>
+
+          <div style={{ color: "#5a5f6a", fontSize: 12, marginTop: 14 }}>
+            {startedAt == null ? "click here and start typing" : "tab — restart"}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+export function TypeTestWindow({ chrome }: { chrome: WindowChrome }) {
+  const t = windowTitle.typetest;
+  return (
+    <Window chrome={chrome} title={t.text} titleColor={t.color}>
+      <TypeTestContent />
     </Window>
   );
 }

@@ -26,18 +26,7 @@ export interface TermChip {
   run: () => void;
 }
 
-export function TerminalWindow({
-  chrome,
-  items,
-  cmd,
-  inputRef,
-  onCmdChange,
-  onCmdKey,
-  onFocusInput,
-  renderSection,
-  chips,
-}: {
-  chrome: WindowChrome;
+interface TerminalContentProps {
   items: TermItem[];
   cmd: string;
   inputRef: RefObject<HTMLInputElement | null>;
@@ -46,8 +35,19 @@ export function TerminalWindow({
   onFocusInput: () => void;
   renderSection: (section: SectionId) => ReactNode;
   chips: TermChip[];
-}) {
-  const t = windowTitle.terminal;
+}
+
+/** The terminal body — reused inside a desktop window and full-screen on mobile. */
+export function TerminalContent({
+  items,
+  cmd,
+  inputRef,
+  onCmdChange,
+  onCmdKey,
+  onFocusInput,
+  renderSection,
+  chips,
+}: TerminalContentProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // keep the newest output (and the prompt) in view as items are appended
@@ -57,7 +57,7 @@ export function TerminalWindow({
   }, [items]);
 
   return (
-    <Window chrome={chrome} title={t.text} titleColor={t.color}>
+    <>
       <div
         ref={scrollRef}
         onClick={onFocusInput}
@@ -150,6 +150,18 @@ export function TerminalWindow({
           </span>
         ))}
       </div>
+    </>
+  );
+}
+
+export function TerminalWindow({
+  chrome,
+  ...rest
+}: { chrome: WindowChrome } & TerminalContentProps) {
+  const t = windowTitle.terminal;
+  return (
+    <Window chrome={chrome} title={t.text} titleColor={t.color}>
+      <TerminalContent {...rest} />
     </Window>
   );
 }
