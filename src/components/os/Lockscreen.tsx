@@ -7,6 +7,7 @@ export function Lockscreen({
   lockDate,
   battery,
   exiting,
+  isMobile,
   onUnlock,
 }: {
   topClock: string;
@@ -14,6 +15,7 @@ export function Lockscreen({
   lockDate: string;
   battery: string;
   exiting: boolean;
+  isMobile: boolean;
   onUnlock: () => void;
 }) {
   return (
@@ -181,6 +183,22 @@ export function Lockscreen({
           </div>
         </div>
       </div>
+
+      {isMobile && (
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            bottom: 8,
+            transform: "translateX(-50%)",
+            width: 120,
+            height: 5,
+            borderRadius: 3,
+            background: "rgba(255,255,255,.5)",
+            zIndex: 4,
+          }}
+        />
+      )}
     </div>
   );
 }

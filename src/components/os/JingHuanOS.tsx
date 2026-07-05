@@ -862,6 +862,7 @@ export class JingHuanOS extends Component<Props, State> {
             lockDate={lockDate}
             battery="100%"
             exiting={lockExit}
+            isMobile={isMobile}
             onUnlock={() => this.unlock()}
           />
         )}
