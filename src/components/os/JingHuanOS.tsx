@@ -1,24 +1,53 @@
-import { Component, createRef, type MouseEvent as ReactMouseEvent } from "react";
+import { Component, createRef, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import { apps, appById, type AppId, type SectionId } from "./apps";
 import { Lockscreen } from "./Lockscreen";
 import { MenuBar } from "./MenuBar";
 import { Dock } from "./Dock";
 import { DesktopIcons } from "./DesktopIcons";
 import type { WindowChrome, ResizeEdge } from "./Window";
-import { TerminalWindow, type TermLine, type TermItem } from "./windows/TerminalWindow";
+import {
+  TerminalWindow,
+  TerminalContent,
+  type TermLine,
+  type TermItem,
+} from "./windows/TerminalWindow";
 import { AboutWindow, AboutContent } from "./windows/AboutWindow";
 import { ExperienceWindow, ExperienceContent } from "./windows/ExperienceWindow";
 import { ProjectsWindow, ProjectsContent } from "./windows/ProjectsWindow";
 import { TechWindow, TechContent } from "./windows/TechWindow";
 import { BlogWindow, BlogContent } from "./windows/BlogWindow";
 import { ContactWindow, ContactContent } from "./windows/ContactWindow";
-import { ProjectDetailWindow } from "./windows/ProjectDetailWindow";
-import { TypeTestWindow } from "./windows/TypeTestWindow";
+import { ProjectDetailWindow, ProjectDetailContent } from "./windows/ProjectDetailWindow";
+import { TypeTestWindow, TypeTestContent } from "./windows/TypeTestWindow";
+import { MobileShell } from "./mobile/MobileShell";
 import { projects, getProjectById, projectAccent } from "../../data/projects";
 
 const GITHUB_URL = "https://github.com/jhjh0409";
 const LINKEDIN_URL = "https://www.linkedin.com/in/jinghuan/";
 const MONO = "'JetBrains Mono',monospace";
+
+// Terminal quick-command chips. Module labels open a window (desktop) or an app
+// (mobile); help/clear stay terminal commands. Shared by desktop + mobile.
+const CHIP_LABELS = [
+  "help",
+  "about",
+  "projects",
+  "experience",
+  "tech",
+  "blog",
+  "contact",
+  "typeracer",
+  "clear",
+];
+const CHIP_APP: Record<string, AppId> = {
+  about: "about",
+  projects: "projects",
+  experience: "experience",
+  tech: "tech",
+  blog: "blog",
+  contact: "contact",
+  typeracer: "typetest",
+};
 
 interface WinState {
   open?: boolean;
@@ -70,6 +99,7 @@ interface State {
   history: string[];
   histIdx: number;
   lines: TermItem[];
+  mobileStack: string[];
 }
 
 /** JingHuanOS — a desktop-OS portfolio. Port of the Design-Composer DCLogic. */
@@ -96,6 +126,7 @@ export class JingHuanOS extends Component<Props, State> {
       history: [],
       histIdx: -1,
       lines: [],
+      mobileStack: [],
     };
   }
 
@@ -129,10 +160,13 @@ export class JingHuanOS extends Component<Props, State> {
   // ---- responsiveness -----------------------------------------------------
   // Re-render on every resize so maximized windows (pixel-sized, for the zoom
   // animation) keep tracking the viewport.
-  private onResize = () => this.setState({ isMobile: window.innerWidth < 760 });
+  // Phone shell when the viewport is genuinely phone-sized (narrow, or short/landscape phone).
+  private phoneSize = () => window.innerWidth <= 620 || window.innerHeight <= 500;
+
+  private onResize = () => this.setState({ isMobile: this.phoneSize() });
 
   private detectMobile() {
-    const m = window.innerWidth < 760;
+    const m = this.phoneSize();
     if (m !== this.state.isMobile) this.setState({ isMobile: m });
   }
 
@@ -299,7 +333,7 @@ export class JingHuanOS extends Component<Props, State> {
             { text: "", color: "#c7ccd4" },
           ],
         };
-        if (start && start !== "none") {
+        if (!s.isMobile && start && start !== "none") {
           const z = s.zTop + 1;
           next.windows = { ...s.windows, [start]: { ...(s.windows[start] || {}), open: true, z } };
           next.zTop = z;
@@ -308,7 +342,7 @@ export class JingHuanOS extends Component<Props, State> {
         return next as State;
       },
       () => {
-        if (start === "terminal") setTimeout(() => this.focusInput(), 30);
+        if (!this.state.isMobile && start === "terminal") setTimeout(() => this.focusInput(), 30);
       },
     );
   }
@@ -442,13 +476,17 @@ export class JingHuanOS extends Component<Props, State> {
 
   /** Render an app section's content inline in the terminal (typed command → in-window output). */
   private renderSection(section: SectionId) {
+    // Inline clicks open a window on desktop, or push onto the phone stack on mobile.
+    const open = (id: AppId) => (this.state.isMobile ? this.mobileOpen(id) : this.openApp(id));
+    const openProj = (id: string) =>
+      this.state.isMobile ? this.mobileOpen("project:" + id) : this.openProject(id);
     switch (section) {
       case "about":
-        return <AboutContent onOpen={(id) => this.openApp(id)} />;
+        return <AboutContent onOpen={open} />;
       case "experience":
         return <ExperienceContent />;
       case "projects":
-        return <ProjectsContent onOpenProject={(id) => this.openProject(id)} />;
+        return <ProjectsContent onOpenProject={openProj} />;
       case "tech":
         return <TechContent />;
       case "blog":
@@ -459,6 +497,82 @@ export class JingHuanOS extends Component<Props, State> {
         return null;
     }
   }
+
+  // ---- mobile shell -------------------------------------------------------
+  private mobileOpen = (id: string) => {
+    this.setState(
+      (s) => ({ mobileStack: [...s.mobileStack, id], activeId: id }),
+      () => {
+        if (id === "terminal") setTimeout(() => this.focusInput(), 40);
+      },
+    );
+  };
+
+  private mobileBack = () => {
+    this.setState((s) => ({ mobileStack: s.mobileStack.slice(0, -1) }));
+  };
+
+  private mobileHome = () => {
+    this.setState({ mobileStack: [] });
+  };
+
+  /** Title + accent for the phone nav bar — terminal-flavoured `~/path` captions. */
+  private metaOf = (id: string): { text: string; color: string } => {
+    if (id.startsWith("project:")) {
+      const pid = id.slice("project:".length);
+      return { text: `~/projects/${pid}`, color: projectAccent(pid) };
+    }
+    const app = appById[id as AppId];
+    return { text: `~/${app.title.toLowerCase()}`, color: app.accent };
+  };
+
+  /** Full-screen content for a phone app (reuses the same *Content as the windows). */
+  private renderApp = (id: string): ReactNode => {
+    if (id.startsWith("project:")) {
+      const p = getProjectById(id.slice("project:".length));
+      return p ? <ProjectDetailContent project={p} /> : null;
+    }
+    switch (id) {
+      case "terminal": {
+        const chips = CHIP_LABELS.map((label) => ({
+          label,
+          run: () => {
+            const app = CHIP_APP[label];
+            if (app) this.mobileOpen(app);
+            else this.runCommand(label);
+          },
+        }));
+        return (
+          <TerminalContent
+            items={this.state.lines}
+            cmd={this.state.cmd}
+            inputRef={this.inputRef}
+            onCmdChange={this.onCmdChange}
+            onCmdKey={this.onCmdKey}
+            onFocusInput={() => this.focusInput()}
+            renderSection={(s) => this.renderSection(s)}
+            chips={chips}
+          />
+        );
+      }
+      case "about":
+        return <AboutContent onOpen={(a) => this.mobileOpen(a)} />;
+      case "experience":
+        return <ExperienceContent />;
+      case "projects":
+        return <ProjectsContent onOpenProject={(pid) => this.mobileOpen("project:" + pid)} />;
+      case "tech":
+        return <TechContent />;
+      case "blog":
+        return <BlogContent />;
+      case "contact":
+        return <ContactContent />;
+      case "typetest":
+        return <TypeTestContent />;
+      default:
+        return null;
+    }
+  };
 
   private runCommand = (raw: string) => {
     const input = (raw ?? "").trim();
@@ -664,31 +778,10 @@ export class JingHuanOS extends Component<Props, State> {
         return { id: a.id, title: a.title, accent: a.accent, x: pos.x, y: pos.y };
       });
 
-    const chipLabels = [
-      "help",
-      "about",
-      "projects",
-      "experience",
-      "tech",
-      "blog",
-      "contact",
-      "typeracer",
-      "clear",
-    ];
-    // Clicking a module chip spawns its window (like the dock); help/clear stay terminal commands.
-    const chipApp: Record<string, AppId> = {
-      about: "about",
-      projects: "projects",
-      experience: "experience",
-      tech: "tech",
-      blog: "blog",
-      contact: "contact",
-      typeracer: "typetest",
-    };
-    const chips = chipLabels.map((label) => ({
+    const chips = CHIP_LABELS.map((label) => ({
       label,
       run: () => {
-        const app = chipApp[label];
+        const app = CHIP_APP[label];
         if (app) {
           this.openApp(app);
         } else {
@@ -697,6 +790,7 @@ export class JingHuanOS extends Component<Props, State> {
         }
       },
     }));
+    const dockApps = ["terminal", "projects", "contact"].map((id) => appById[id as AppId]);
 
     return (
       <div
@@ -746,7 +840,7 @@ export class JingHuanOS extends Component<Props, State> {
           }}
         />
 
-        {unlocked && (
+        {unlocked && !isMobile && (
           <MenuBar onOpen={(id) => this.openApp(id)} menuDate={menuDate} clock={clock} />
         )}
 
@@ -763,43 +857,61 @@ export class JingHuanOS extends Component<Props, State> {
           />
         )}
 
-        {isOpen.terminal && (
-          <TerminalWindow
-            chrome={this.chromeFor("terminal")}
-            items={this.state.lines}
-            cmd={this.state.cmd}
-            inputRef={this.inputRef}
-            onCmdChange={this.onCmdChange}
-            onCmdKey={this.onCmdKey}
-            onFocusInput={() => this.focusInput()}
-            renderSection={(section) => this.renderSection(section)}
-            chips={chips}
+        {unlocked && isMobile && (
+          <MobileShell
+            time={lockClock}
+            apps={apps}
+            dockApps={dockApps}
+            stack={this.state.mobileStack}
+            onOpen={this.mobileOpen}
+            onBack={this.mobileBack}
+            onHome={this.mobileHome}
+            renderApp={this.renderApp}
+            metaOf={this.metaOf}
           />
         )}
-        {isOpen.about && (
-          <AboutWindow chrome={this.chromeFor("about")} onOpen={(id) => this.openApp(id)} />
-        )}
-        {isOpen.experience && <ExperienceWindow chrome={this.chromeFor("experience")} />}
-        {isOpen.projects && (
-          <ProjectsWindow
-            chrome={this.chromeFor("projects")}
-            onOpenProject={(id) => this.openProject(id)}
-          />
-        )}
-        {isOpen.tech && <TechWindow chrome={this.chromeFor("tech")} />}
-        {isOpen.blog && <BlogWindow chrome={this.chromeFor("blog")} />}
-        {isOpen.contact && <ContactWindow chrome={this.chromeFor("contact")} />}
-        {isOpen.typetest && <TypeTestWindow chrome={this.chromeFor("typetest")} />}
 
-        {Object.keys(this.state.windows)
-          .filter((k) => k.startsWith("project:") && this.state.windows[k]?.open)
-          .map((k) => {
-            const project = getProjectById(k.slice("project:".length));
-            if (!project) return null;
-            return <ProjectDetailWindow key={k} project={project} chrome={this.chromeFor(k)} />;
-          })}
+        {!isMobile && (
+          <>
+            {isOpen.terminal && (
+              <TerminalWindow
+                chrome={this.chromeFor("terminal")}
+                items={this.state.lines}
+                cmd={this.state.cmd}
+                inputRef={this.inputRef}
+                onCmdChange={this.onCmdChange}
+                onCmdKey={this.onCmdKey}
+                onFocusInput={() => this.focusInput()}
+                renderSection={(section) => this.renderSection(section)}
+                chips={chips}
+              />
+            )}
+            {isOpen.about && (
+              <AboutWindow chrome={this.chromeFor("about")} onOpen={(id) => this.openApp(id)} />
+            )}
+            {isOpen.experience && <ExperienceWindow chrome={this.chromeFor("experience")} />}
+            {isOpen.projects && (
+              <ProjectsWindow
+                chrome={this.chromeFor("projects")}
+                onOpenProject={(id) => this.openProject(id)}
+              />
+            )}
+            {isOpen.tech && <TechWindow chrome={this.chromeFor("tech")} />}
+            {isOpen.blog && <BlogWindow chrome={this.chromeFor("blog")} />}
+            {isOpen.contact && <ContactWindow chrome={this.chromeFor("contact")} />}
+            {isOpen.typetest && <TypeTestWindow chrome={this.chromeFor("typetest")} />}
 
-        {unlocked && <Dock isOpen={isOpen} onDockClick={this.dockClick} />}
+            {Object.keys(this.state.windows)
+              .filter((k) => k.startsWith("project:") && this.state.windows[k]?.open)
+              .map((k) => {
+                const project = getProjectById(k.slice("project:".length));
+                if (!project) return null;
+                return <ProjectDetailWindow key={k} project={project} chrome={this.chromeFor(k)} />;
+              })}
+
+            {unlocked && <Dock isOpen={isOpen} onDockClick={this.dockClick} />}
+          </>
+        )}
       </div>
     );
   }
