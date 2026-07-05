@@ -100,6 +100,7 @@ interface State {
   histIdx: number;
   lines: TermItem[];
   mobileStack: string[];
+  mobileOrigin: { cx: number; cy: number; scale: number } | null;
 }
 
 /** JingHuanOS — a desktop-OS portfolio. Port of the Design-Composer DCLogic. */
@@ -127,6 +128,7 @@ export class JingHuanOS extends Component<Props, State> {
       histIdx: -1,
       lines: [],
       mobileStack: [],
+      mobileOrigin: null,
     };
   }
 
@@ -499,9 +501,16 @@ export class JingHuanOS extends Component<Props, State> {
   }
 
   // ---- mobile shell -------------------------------------------------------
-  private mobileOpen = (id: string) => {
+  private mobileOpen = (id: string, rect?: DOMRect) => {
+    const origin = rect
+      ? {
+          cx: rect.left + rect.width / 2,
+          cy: rect.top + rect.height / 2,
+          scale: Math.max(0.1, rect.width / window.innerWidth),
+        }
+      : null;
     this.setState(
-      (s) => ({ mobileStack: [...s.mobileStack, id], activeId: id }),
+      (s) => ({ mobileStack: [...s.mobileStack, id], activeId: id, mobileOrigin: origin }),
       () => {
         if (id === "terminal") setTimeout(() => this.focusInput(), 40);
       },
@@ -863,6 +872,7 @@ export class JingHuanOS extends Component<Props, State> {
             apps={apps}
             dockApps={dockApps}
             stack={this.state.mobileStack}
+            origin={this.state.mobileOrigin}
             onOpen={this.mobileOpen}
             onBack={this.mobileBack}
             onHome={this.mobileHome}

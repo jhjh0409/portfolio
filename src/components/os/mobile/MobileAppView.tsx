@@ -1,9 +1,10 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 
-/** A full-screen app: status-bar space, glass nav header, content, (home indicator lives in the shell). */
+/** A full-screen app: zooms open from the tapped icon, glass nav header, content. */
 export function MobileAppView({
   title,
   accent,
+  origin,
   canBack,
   onBack,
   onHome,
@@ -11,14 +12,35 @@ export function MobileAppView({
 }: {
   title: string;
   accent: string;
+  origin: { cx: number; cy: number; scale: number } | null;
   canBack: boolean;
   onBack: () => void;
   onHome: () => void;
   children: ReactNode;
 }) {
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setShown(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  const reduce =
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Zoom open from the tapped icon (or a gentle scale-in when there's no origin).
+  const anim: CSSProperties = reduce
+    ? {}
+    : {
+        transformOrigin: origin ? `${origin.cx}px ${origin.cy}px` : "50% 42%",
+        transform: shown ? "scale(1)" : `scale(${origin ? origin.scale : 0.94})`,
+        opacity: shown ? 1 : 0,
+        transition: shown
+          ? "transform 0.34s cubic-bezier(0.2,0.8,0.2,1), opacity 0.24s ease"
+          : "none",
+      };
+
   return (
     <div
-      className="mos-appview"
       style={{
         position: "absolute",
         inset: 0,
@@ -27,6 +49,7 @@ export function MobileAppView({
         background: "#15171b",
         overflow: "hidden",
         paddingTop: 46,
+        ...anim,
       }}
     >
       <div

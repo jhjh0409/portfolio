@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { useRef, type CSSProperties } from "react";
 import { AppIcon } from "../icons";
 import type { AppId } from "../apps";
 
@@ -13,16 +13,17 @@ export function MobileIcon({
 }: {
   id: AppId;
   accent: string;
-  onTap: () => void;
+  onTap: (rect?: DOMRect) => void;
   tile?: number;
   glyph?: number;
   label?: string;
 }) {
+  const iconRef = useRef<HTMLSpanElement>(null);
   return (
     <button
       type="button"
       className="mos-tile"
-      onClick={onTap}
+      onClick={() => onTap(iconRef.current?.getBoundingClientRect())}
       style={{
         display: "flex",
         flexDirection: "column",
@@ -37,6 +38,7 @@ export function MobileIcon({
       }}
     >
       <span
+        ref={iconRef}
         className="mos-icon"
         style={
           {

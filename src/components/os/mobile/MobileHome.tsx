@@ -9,7 +9,7 @@ export function MobileHome({
 }: {
   apps: AppDef[];
   dockApps: AppDef[];
-  onOpen: (id: string) => void;
+  onOpen: (id: string, rect?: DOMRect) => void;
 }) {
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
@@ -66,7 +66,7 @@ export function MobileHome({
               id={a.id}
               accent={a.accent}
               label={a.title}
-              onTap={() => onOpen(a.id)}
+              onTap={(rect) => onOpen(a.id, rect)}
             />
           ))}
         </div>
@@ -102,7 +102,12 @@ export function MobileHome({
           }}
         >
           {dockApps.map((a) => (
-            <MobileIcon key={a.id} id={a.id} accent={a.accent} onTap={() => onOpen(a.id)} />
+            <MobileIcon
+              key={a.id}
+              id={a.id}
+              accent={a.accent}
+              onTap={(rect) => onOpen(a.id, rect)}
+            />
           ))}
         </div>
       </div>

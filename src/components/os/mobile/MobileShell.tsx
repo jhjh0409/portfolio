@@ -17,16 +17,18 @@ export function MobileShell({
   onHome,
   renderApp,
   metaOf,
+  origin,
 }: {
   time: string;
   apps: AppDef[];
   dockApps: AppDef[];
   stack: string[];
-  onOpen: (id: string) => void;
+  onOpen: (id: string, rect?: DOMRect) => void;
   onBack: () => void;
   onHome: () => void;
   renderApp: (id: string) => ReactNode;
   metaOf: (id: string) => { text: string; color: string };
+  origin: { cx: number; cy: number; scale: number } | null;
 }) {
   const current = stack[stack.length - 1];
   const inApp = stack.length > 0;
@@ -48,6 +50,7 @@ export function MobileShell({
           key={current}
           title={meta.text}
           accent={meta.color}
+          origin={origin}
           canBack={stack.length > 1}
           onBack={onBack}
           onHome={onHome}
